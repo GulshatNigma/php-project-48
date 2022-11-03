@@ -1,0 +1,16 @@
+{
+    "name": "hexlet/code",
+    "description": "php-project-48",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Гульшат Нигматуллина",
+            "email": "nigma1918@mail.ru"
+        }
+    ],
+    "require": {}
+}
