@@ -12,5 +12,10 @@
             "email": "nigma1918@mail.ru"
         }
     ],
-    "require": {}
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "bin": [
+        "bin/gendiff"
+    ]
 }
