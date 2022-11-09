@@ -1,0 +1,11 @@
+<?php
+
+namespace Differ\Differ;
+
+function genDiff($pathToFile1, $pathToFile2)
+{
+    $file1 = json_decode($pathToFile1, $associative = true);
+    $file2 = json_decode(realpath($pathToFile2), $associative = true);
+
+    var_dump($file1);
+}
