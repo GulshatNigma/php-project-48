@@ -2,10 +2,50 @@
 
 namespace Differ\Differ;
 
+use function Functional\flatten;
+
 function genDiff($pathToFile1, $pathToFile2)
 {
-    $file1 = json_decode($pathToFile1, $associative = true);
-    $file2 = json_decode(realpath($pathToFile2), $associative = true);
+    $file1Content = file_get_contents(realpath($pathToFile1)); // realpath - получает абсолютный путь, file_get_contents - читает содержимое файла
+    $file2Content = file_get_contents(realpath($pathToFile2));
+    $file1 = json_decode($file1Content, $associative = true); // json декодирует строку JSON, возвращает ассоциативный массив.
+    $file2 = json_decode($file2Content, $associative = true); // РАЗОБРАТЬСЯ С ИМЕНОВАНИЕМ и т.д.
 
-    var_dump($file1);
+    $generalData = array_intersect_assoc($file1, $file2); // здесь общие данные файлов
+    
+    $file1Keys = array_keys($file1); // здесь ключи файла 1
+    $file2Keys = array_keys($file2); // здесь ключи файла 2
+
+    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys)); // Ключи обоих файлов, убирает повторы
+    sort($filesKeys, SORT_STRING); // сортирует в алфавитном порядке
+
+    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1, $file2, $generalData) {                         
+    if (array_key_exists($key, $file1) && !array_key_exists($key, $file2)) {
+       $value1 = gettype($file1[$key]) === "boolean" ? trueOrFalse($file1[$key]) : $file1[$key];
+       $acc[] =  "- {$key}: {$value1}";
+    } 
+    if (!array_key_exists($key, $file1) && array_key_exists($key, $file2)) {
+         $value2 = gettype($file2[$key]) === "boolean" ? trueOrFalse($file2[$key]) : $file2[$key];
+        $acc[] =  "- {$key}: {$value2}";
+    } 
+    if (array_key_exists($key, $generalData)) {
+        $acc[] =  "  {$key}: {$generalData[$key]}";
+    }
+    if (array_key_exists($key, $file1) && array_key_exists($key, $file2) && !array_key_exists($key, $generalData)) {
+        $value1 = gettype($file1[$key]) === "boolean" ? trueOrFalse($file1[$key]) : $file1[$key];
+        $value2 = gettype($file2[$key]) === "boolean" ? trueOrFalse($file2[$key]) : $file2[$key];
+        $acc[] = "- {$key}: {$value1}";
+        $acc[] = "+ {$key}: {$value2}";
+    }
+    return $acc;
+    }, []);
+    
+    $result = implode("\n", $result);
+    //$result = json_encode($result); // переводит в json...нужно ли это?
+    return $result;
+}
+
+function trueOrFalse($value)
+{
+    return $value === true ? "true" : "false";
 }
