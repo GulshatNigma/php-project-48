@@ -13,33 +13,12 @@ function genDiff($pathToFile1, $pathToFile2)
     $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
 
     $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                         
-    if (array_key_exists($key, $file1Content) && !array_key_exists($key, $file2Content)) {
-       $value1 = gettype($file1Content[$key]) === "boolean" ? isTrueOrFalse($file1Content[$key]) : $file1Content[$key];
-       $acc[] =  "- {$key}: {$value1}";
-    } 
-    if (!array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content)) {
-         $value2 = gettype($file2Content[$key]) === "boolean" ? isTrueOrFalse($file2Content[$key]) : $file2Content[$key];
-        $acc[] =  "+ {$key}: {$value2}";
-    } 
-    if (array_key_exists($key, $generalDataOfFiles)) {
-        $acc[] =  "  {$key}: {$generalDataOfFiles[$key]}";
-    }
-    if (array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content) && !array_key_exists($key, $generalDataOfFiles)) {
-        $value1 = gettype($file1Content[$key]) === "boolean" ? isTrueOrFalse($file1Content[$key]) : $file1Content[$key];
-        $value2 = gettype($file2Content[$key]) === "boolean" ? isTrueOrFalse($file2Content[$key]) : $file2Content[$key];
-        $acc[] = "- {$key}: {$value1}";
-        $acc[] = "+ {$key}: {$value2}";
-    }
+        $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
     return $acc;
     }, []);
     
-    $result = implode("\n  ", $result);
+    $result = implode("\n", $result);
     return "{\n$result\n}\n";
-}
-
-function isTrueOrFalse($value)
-{
-    return $value === true ? "true" : "false";
 }
 
 function getContentsOfFile($pathToFile)
@@ -56,4 +35,31 @@ function getUniqueKeysOfFiles($file1Content, $file2Content)
     $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
     sort($filesKeys, SORT_STRING);
     return $filesKeys;
+}
+
+function makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key)
+{
+    if (array_key_exists($key, $file1Content) && !array_key_exists($key, $file2Content)) {
+       $file1Value = getValue($file1Content, $key);
+       return "- {$key}: {$file1Value}";
+    } 
+    if (!array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content)) {
+        $file2Value = getValue($file2Content, $key);
+       return "+ {$key}: {$file2Value}";
+    } 
+    if (array_key_exists($key, $generalDataOfFiles)) {
+        return "  {$key}: {$generalDataOfFiles[$key]}";
+    } else {
+        $file1Value = getValue($file1Content, $key);
+        $file2Value = getValue($file2Content, $key);
+        return "- {$key}: {$file1Value}" . "\n" . "+ {$key}: {$file2Value}";
+    }       
+}
+
+function getValue($fileContent, $key)
+{
+    if (gettype($fileContent[$key]) === "boolean") {
+        return $fileContent[$key] === true ? "true" : "false";
+    }
+    return $fileContent[$key];
 }
