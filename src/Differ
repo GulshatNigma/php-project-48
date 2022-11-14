@@ -6,34 +6,27 @@ use function Functional\flatten;
 
 function genDiff($pathToFile1, $pathToFile2)
 {
-    $file1Content = file_get_contents(realpath($pathToFile1)); // realpath - получает абсолютный путь, file_get_contents - читает содержимое файла
-    $file2Content = file_get_contents(realpath($pathToFile2));
-    $file1 = json_decode($file1Content, $associative = true); // json декодирует строку JSON, возвращает ассоциативный массив.
-    $file2 = json_decode($file2Content, $associative = true); // РАЗОБРАТЬСЯ С ИМЕНОВАНИЕМ и т.д.
+    $file1Content = getContentsOfFile($pathToFile1);
+    $file2Content = getContentsOfFile($pathToFile2);
 
-    $generalData = array_intersect_assoc($file1, $file2); // здесь общие данные файлов
-    
-    $file1Keys = array_keys($file1); // здесь ключи файла 1
-    $file2Keys = array_keys($file2); // здесь ключи файла 2
+    $generalDataOfFiles = array_intersect_assoc($file1Content, $file2Content);
+    $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
 
-    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys)); // Ключи обоих файлов, убирает повторы
-    sort($filesKeys, SORT_STRING); // сортирует в алфавитном порядке
-
-    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1, $file2, $generalData) {                         
-    if (array_key_exists($key, $file1) && !array_key_exists($key, $file2)) {
-       $value1 = gettype($file1[$key]) === "boolean" ? trueOrFalse($file1[$key]) : $file1[$key];
+    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                         
+    if (array_key_exists($key, $file1Content) && !array_key_exists($key, $file2Content)) {
+       $value1 = gettype($file1Content[$key]) === "boolean" ? isTrueOrFalse($file1Content[$key]) : $file1Content[$key];
        $acc[] =  "- {$key}: {$value1}";
     } 
-    if (!array_key_exists($key, $file1) && array_key_exists($key, $file2)) {
-         $value2 = gettype($file2[$key]) === "boolean" ? trueOrFalse($file2[$key]) : $file2[$key];
+    if (!array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content)) {
+         $value2 = gettype($file2Content[$key]) === "boolean" ? isTrueOrFalse($file2Content[$key]) : $file2Content[$key];
         $acc[] =  "+ {$key}: {$value2}";
     } 
-    if (array_key_exists($key, $generalData)) {
-        $acc[] =  "  {$key}: {$generalData[$key]}";
+    if (array_key_exists($key, $generalDataOfFiles)) {
+        $acc[] =  "  {$key}: {$generalDataOfFiles[$key]}";
     }
-    if (array_key_exists($key, $file1) && array_key_exists($key, $file2) && !array_key_exists($key, $generalData)) {
-        $value1 = gettype($file1[$key]) === "boolean" ? trueOrFalse($file1[$key]) : $file1[$key];
-        $value2 = gettype($file2[$key]) === "boolean" ? trueOrFalse($file2[$key]) : $file2[$key];
+    if (array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content) && !array_key_exists($key, $generalDataOfFiles)) {
+        $value1 = gettype($file1Content[$key]) === "boolean" ? isTrueOrFalse($file1Content[$key]) : $file1Content[$key];
+        $value2 = gettype($file2Content[$key]) === "boolean" ? isTrueOrFalse($file2Content[$key]) : $file2Content[$key];
         $acc[] = "- {$key}: {$value1}";
         $acc[] = "+ {$key}: {$value2}";
     }
@@ -44,7 +37,23 @@ function genDiff($pathToFile1, $pathToFile2)
     return "{\n$result\n}\n";
 }
 
-function trueOrFalse($value)
+function isTrueOrFalse($value)
 {
     return $value === true ? "true" : "false";
+}
+
+function getContentsOfFile($pathToFile)
+{
+    $absolutePathToFile = realpath($pathToFile);
+    $fileContents = file_get_contents($absolutePathToFile);
+    return json_decode($fileContents, $associative = true);
+}
+
+function getUniqueKeysOfFiles($file1Content, $file2Content)
+{
+    $file1Keys = array_keys($file1Content);
+    $file2Keys = array_keys($file2Content);
+    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
+    sort($filesKeys, SORT_STRING);
+    return $filesKeys;
 }
