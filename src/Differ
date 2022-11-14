@@ -14,11 +14,11 @@ function genDiff($pathToFile1, $pathToFile2)
 
     $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                         
         $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
-    return $acc;
+        return $acc;
     }, []);
     
-    $result = implode("\n", $result);
-    return "{\n$result\n}\n";
+    $result = implode("\n  ", $result);
+    return "{\n  $result\n}\n";
 }
 
 function getContentsOfFile($pathToFile)
@@ -52,7 +52,7 @@ function makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, 
     } else {
         $file1Value = getValue($file1Content, $key);
         $file2Value = getValue($file2Content, $key);
-        return "- {$key}: {$file1Value}" . "\n" . "+ {$key}: {$file2Value}";
+        return "- {$key}: {$file1Value}" . "\n  " . "+ {$key}: {$file2Value}";
     }       
 }
 
