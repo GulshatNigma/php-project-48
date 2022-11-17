@@ -5,7 +5,7 @@
         "psr-4": {
             "Hexlet\\Code\\": "src/"
         },
-        "files": ["src/Differ"]
+        "files": ["src/Differ.php"]
     },
     "authors": [
         {
@@ -19,5 +19,8 @@
     },
     "bin": [
         "bin/gendiff"
-    ]
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7"
+    }
 }

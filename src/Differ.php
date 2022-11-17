@@ -12,7 +12,7 @@ function genDiff($pathToFile1, $pathToFile2)
     $generalDataOfFiles = array_intersect_assoc($file1Content, $file2Content);
     $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
 
-    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                         
+    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                      
         $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
         return $acc;
     }, []);
