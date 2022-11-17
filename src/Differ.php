@@ -12,11 +12,15 @@ function genDiff($pathToFile1, $pathToFile2)
     $generalDataOfFiles = array_intersect_assoc($file1Content, $file2Content);
     $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
 
-    $result = array_reduce($filesKeys, function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {                      
-        $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
-        return $acc;
-    }, []);
-    
+    $result = array_reduce(
+        $filesKeys,
+        function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {
+            $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
+            return $acc;
+        },
+        []
+    );
+
     $result = implode("\n  ", $result);
     return "{\n  $result\n}\n";
 }
@@ -40,20 +44,20 @@ function getUniqueKeysOfFiles($file1Content, $file2Content)
 function makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key)
 {
     if (array_key_exists($key, $file1Content) && !array_key_exists($key, $file2Content)) {
-       $file1Value = getValue($file1Content, $key);
-       return "- {$key}: {$file1Value}";
-    } 
+        $file1Value = getValue($file1Content, $key);
+        return "- {$key}: {$file1Value}";
+    }
     if (!array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content)) {
         $file2Value = getValue($file2Content, $key);
-       return "+ {$key}: {$file2Value}";
-    } 
+        return "+ {$key}: {$file2Value}";
+    }
     if (array_key_exists($key, $generalDataOfFiles)) {
         return "  {$key}: {$generalDataOfFiles[$key]}";
     } else {
         $file1Value = getValue($file1Content, $key);
         $file2Value = getValue($file2Content, $key);
         return "- {$key}: {$file1Value}" . "\n  " . "+ {$key}: {$file2Value}";
-    }       
+    }
 }
 
 function getValue($fileContent, $key)
