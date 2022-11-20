@@ -1,8 +1,8 @@
 lint:
-		composer exec phpcs -- --standard=PSR12 src bin
+		composer exec --verbose phpcs -- --standard=PSR12 src tests
 
 test:
-		composer exec phpunit tests
+		composer exec --verbose phpunit tests
 
 install:
 		composer install
