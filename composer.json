@@ -1,6 +1,7 @@
 {
     "name": "hexlet/code",
     "description": "php-project-48",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Hexlet\\Code\\": "src/"
