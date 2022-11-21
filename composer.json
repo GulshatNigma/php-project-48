@@ -2,11 +2,7 @@
     "name": "hexlet/code",
     "description": "php-project-48",
     "license": "MIT",
-    "scripts": {"phpcs": "phpcs"},
     "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        },
         "files": ["src/Differ.php", "src/Cli.php"]
     },
     "authors": [
