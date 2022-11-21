@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1669050253">
-  <project timestamp="1669050253">
+<coverage generated="1669052379">
+  <project timestamp="1669052379">
     <file name="/home/gulshat/php-project-48/src/Cli.php">
       <line num="27" type="stmt" count="0"/>
       <line num="29" type="stmt" count="0"/>
