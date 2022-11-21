@@ -24,6 +24,9 @@ jobs:
       
     - name: make test
       run: make test
+      
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.TEST_REPORTER_ID }}
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
