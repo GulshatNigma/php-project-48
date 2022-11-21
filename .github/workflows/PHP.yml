@@ -16,7 +16,10 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: make validate
     
-    - name: action lint
+    - name: make install
+      run: make install
+    
+    - name: make lint
       run: make lint
       
     - name: make test
