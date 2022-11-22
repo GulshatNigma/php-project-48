@@ -5,3 +5,5 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a328485cbd025259bd66/test_coverage)](https://codeclimate.com/github/GulshatNigma/php-project-48/test_coverage)
 
 [![asciicast](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF.svg)](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF)
+For YAML files
+[![asciicast](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE.svg)](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE)

@@ -3,6 +3,7 @@
 namespace Differ\Differ;
 
 use function Functional\flatten;
+use function Differ\Parsers\parseFile;
 
 function genDiff($pathToFile1, $pathToFile2)
 {
@@ -28,8 +29,7 @@ function genDiff($pathToFile1, $pathToFile2)
 function getContentsOfFile($pathToFile)
 {
     $absolutePathToFile = realpath($pathToFile);
-    $fileContents = file_get_contents($absolutePathToFile);
-    return json_decode($fileContents, $associative = true);
+    return parseFile($absolutePathToFile);
 }
 
 function getUniqueKeysOfFiles($file1Content, $file2Content)
