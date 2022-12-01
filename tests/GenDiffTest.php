@@ -14,7 +14,17 @@ class GenDiffTest extends TestCase
         return realpath(implode('/', $parts));
     }
 
-    public function testJson()
+    public function testJson1()
+    {
+        $file1 = $this->getFixtureFullPath('File1.json');
+        $file2 = $this->getFixtureFullPath('File2.json');
+        $result = file_get_contents($this->getFixtureFullPath('ResultJsonFiles.json'));
+
+        $diff = genDiff($file1, $file2);
+        return $this->assertTrue($diff == $result);
+    }
+    
+    public function testJson2()
     {
         $file1 = $this->getFixtureFullPath('file1.json');
         $file2 = $this->getFixtureFullPath('file2.json');
