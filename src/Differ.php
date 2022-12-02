@@ -12,20 +12,18 @@ function genDiff($pathToFile1, $pathToFile2)
 
     $result = getResult($file1Content, $file2Content);
 
-    return "{\n$result\n}";
+    return "{\n$result\n}\n";
 }
 
 function getResult($file1Content, $file2Content)
 {
     $iter = function ($file1Content, $file2Content) {
         $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
-        $result = array_reduce(
-            $filesKeys,
-            function ($acc, $key) use ($file1Content, $file2Content) {
-                $acc[] = makeDifferenceCheck($file1Content, $file2Content, $key);
-                return $acc;
+        $result = array_map(
+            function ($key) use ($file1Content, $file2Content) {
+                return makeDifferenceCheck($file1Content, $file2Content, $key);
             },
-            []
+            $filesKeys
         );
         return implode("\n", $result);
     };
