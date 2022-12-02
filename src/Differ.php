@@ -10,13 +10,12 @@ function genDiff($pathToFile1, $pathToFile2)
     $file1Content = getContentsOfFile($pathToFile1);
     $file2Content = getContentsOfFile($pathToFile2);
 
-    $generalDataOfFiles = array_intersect_assoc($file1Content, $file2Content);
     $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
 
     $result = array_reduce(
         $filesKeys,
-        function ($acc, $key) use ($file1Content, $file2Content, $generalDataOfFiles) {
-            $acc[] = makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key);
+        function ($acc, $key) use ($file1Content, $file2Content) {
+            $acc[] = makeDifferenceCheck($file1Content, $file2Content, $key);
             return $acc;
         },
         []
@@ -24,6 +23,24 @@ function genDiff($pathToFile1, $pathToFile2)
 
     $result = implode("\n  ", $result);
     return "{\n  $result\n}\n";
+}
+
+function makeDifferenceCheck($file1Content, $file2Content, $key)
+{
+    if (!array_key_exists($key, $file2Content)) {
+        $file1Value = toString($file1Content[$key]);
+        return "- {$key}: {$file1Value}";
+    }
+    if (!array_key_exists($key, $file1Content)) {
+        $file2Value = toString($file2Content[$key]);
+        return "+ {$key}: {$file2Value}";
+    }
+    $file1Value = toString($file1Content[$key]);
+    $file2Value = toString($file2Content[$key]);
+    if ($file1Value !== $file2Value) {
+        return "- {$key}: {$file1Value}" . "\n  " . "+ {$key}: {$file2Value}";
+    }
+        return "  {$key}: {$file1Value}";
 }
 
 function getContentsOfFile($pathToFile)
@@ -41,29 +58,7 @@ function getUniqueKeysOfFiles($file1Content, $file2Content)
     return $filesKeys;
 }
 
-function makeDifferenceCheck($file1Content, $file2Content, $generalDataOfFiles, $key)
+function toString($value)
 {
-    if (array_key_exists($key, $file1Content) && !array_key_exists($key, $file2Content)) {
-        $file1Value = getValue($file1Content, $key);
-        return "- {$key}: {$file1Value}";
-    }
-    if (!array_key_exists($key, $file1Content) && array_key_exists($key, $file2Content)) {
-        $file2Value = getValue($file2Content, $key);
-        return "+ {$key}: {$file2Value}";
-    }
-    if (array_key_exists($key, $generalDataOfFiles)) {
-        return "  {$key}: {$generalDataOfFiles[$key]}";
-    } else {
-        $file1Value = getValue($file1Content, $key);
-        $file2Value = getValue($file2Content, $key);
-        return "- {$key}: {$file1Value}" . "\n  " . "+ {$key}: {$file2Value}";
-    }
-}
-
-function getValue($fileContent, $key)
-{
-    if (gettype($fileContent[$key]) === "boolean") {
-        return $fileContent[$key] === true ? "true" : "false";
-    }
-    return $fileContent[$key];
+    return trim(var_export($value, true), "'");
 }
