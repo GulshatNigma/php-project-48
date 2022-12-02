@@ -10,19 +10,27 @@ function genDiff($pathToFile1, $pathToFile2)
     $file1Content = getContentsOfFile($pathToFile1);
     $file2Content = getContentsOfFile($pathToFile2);
 
-    $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
+    $result = getResult($file1Content, $file2Content);
 
-    $result = array_reduce(
-        $filesKeys,
-        function ($acc, $key) use ($file1Content, $file2Content) {
-            $acc[] = makeDifferenceCheck($file1Content, $file2Content, $key);
-            return $acc;
-        },
-        []
-    );
+    return "{\n$result\n}";
+}
 
-    $result = implode("\n  ", $result);
-    return "{\n  $result\n}\n";
+function getResult($file1Content, $file2Content)
+{
+    $iter = function ($file1Content, $file2Content) {
+        $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
+        $result = array_reduce(
+            $filesKeys,
+            function ($acc, $key) use ($file1Content, $file2Content) {
+                $acc[] = makeDifferenceCheck($file1Content, $file2Content, $key);
+                return $acc;
+            },
+            []
+        );
+        return implode("\n", $result);
+    };
+    $result = $iter($file1Content, $file2Content);
+    return $result;
 }
 
 function makeDifferenceCheck($file1Content, $file2Content, $key)
@@ -35,12 +43,17 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
         $file2Value = toString($file2Content[$key]);
         return "+ {$key}: {$file2Value}";
     }
-    $file1Value = toString($file1Content[$key]);
-    $file2Value = toString($file2Content[$key]);
-    if ($file1Value !== $file2Value) {
-        return "- {$key}: {$file1Value}" . "\n  " . "+ {$key}: {$file2Value}";
+    $file1Value = $file1Content[$key];
+    $file2Value = $file2Content[$key];
+    if (!is_array($file1Value) || !is_array($file2Value)) {
+        $file1Value = toString($file1Content[$key]);
+        $file2Value = toString($file2Content[$key]);
+        if ($file1Value !== $file2Value) {
+            return "- {$key}: {$file1Value}" . "\n" . "+ {$key}: {$file2Value}";
+        }
+            return "  {$key}: {$file1Value}";
     }
-        return "  {$key}: {$file1Value}";
+    return "  {$key}:\n" . getResult($file1Value, $file2Value);
 }
 
 function getContentsOfFile($pathToFile)
