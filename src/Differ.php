@@ -7,15 +7,15 @@ use function Differ\Parsers\parseFile;
 
 function genDiff($pathToFile1, $pathToFile2)
 {
-    $file1Content = getContentsOfFile($pathToFile1);
-    $file2Content = getContentsOfFile($pathToFile2);
+    $file1Content = parseFile(realpath($pathToFile1));
+    $file2Content = parseFile(realpath($pathToFile2));
 
-    $result = getResult($file1Content, $file2Content);
+    $result = getLines($file1Content, $file2Content);
 
     return "{\n$result\n}\n";
 }
 
-function getResult($file1Content, $file2Content)
+function getLines($file1Content, $file2Content)
 {
     $iter = function ($file1Content, $file2Content) {
         $filesKeys = getUniqueKeysOfFiles($file1Content, $file2Content);
@@ -35,6 +35,7 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
 {
     if (!array_key_exists($key, $file2Content)) {
         $file1Value = toString($file1Content[$key]);
+        var_dump($file1Value);
         return "- {$key}: {$file1Value}";
     }
     if (!array_key_exists($key, $file1Content)) {
@@ -51,13 +52,7 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
         }
             return "  {$key}: {$file1Value}";
     }
-    return "  {$key}:\n" . getResult($file1Value, $file2Value);
-}
-
-function getContentsOfFile($pathToFile)
-{
-    $absolutePathToFile = realpath($pathToFile);
-    return parseFile($absolutePathToFile);
+    return "  {$key}:\n" . getLines($file1Value, $file2Value);
 }
 
 function getUniqueKeysOfFiles($file1Content, $file2Content)
