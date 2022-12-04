@@ -3,7 +3,10 @@
     "description": "php-project-48",
     "license": "MIT",
     "autoload": {
-        "files": ["src/Differ.php", "src/Cli.php", "src/Parsers.php"]
+        "files": ["src/Differ.php",
+                  "src/Cli.php",
+                  "src/Parsers.php",
+                  "src/Formatter/stylish.php"]
     },
     "authors": [
         {
