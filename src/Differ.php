@@ -43,7 +43,7 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
     if ($file1Value !== $file2Value) {
         $value1 = getLines($file1Value) ?? null;
         $value2 = getLines($file2Value) ?? null;
-        return ["category" => "changed",  "key" => $key, "value1" => $value1, "value2" => $value2,];
+        return ["category" => "changed",  "key" => $key, "value" => $value1, "value2" => $value2,];
     }
     return ["category" => "unchanged", "key" => $key, "value" => $file1Value];
 }
