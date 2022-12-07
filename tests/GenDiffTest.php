@@ -21,7 +21,7 @@ class GenDiffTest extends TestCase
         $result = file_get_contents($this->getFixtureFullPath('ResultJsonfiles.json'));
 
         $diff = genDiff($file1, $file2);
-        return $this->assertTrue($diff == $result);
+        return $this->assertEquals($result, $diff);
     }
     
     public function testJson2()
@@ -31,7 +31,7 @@ class GenDiffTest extends TestCase
         $result = file_get_contents($this->getFixtureFullPath('resultJsonFiles.json'));
 
         $diff = genDiff($file1, $file2);
-        return $this->assertTrue($diff == $result);
+        return $this->assertEquals($diff, $result);
     }
 
     public function testYaml()
@@ -42,6 +42,6 @@ class GenDiffTest extends TestCase
 
         $diff = genDiff($file1, $file2);
         var_dump($result);
-        return $this->assertTrue(genDiff($file1, $file2) == $result);
+        return $this->asserEquals(genDiff($file1, $file2), $result);
     }
 }
