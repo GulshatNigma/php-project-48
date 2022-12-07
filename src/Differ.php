@@ -52,9 +52,11 @@ function getLines($fileContent)
 {
     $iter = function ($fileContent) use (&$iter){
         if (!is_array($fileContent)) {
+            if ($fileContent === null) {
+                return "null";
+            }
             return toString($fileContent);
         }
-
         $filesKeys = array_keys($fileContent);
         return array_map(
             function ($key) use ($fileContent, $iter) {

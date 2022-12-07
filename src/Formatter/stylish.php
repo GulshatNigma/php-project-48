@@ -4,19 +4,25 @@ namespace Differ\Formatter\Stylish;
 
 function getFormatStylish($tree, $depth = 1)
 {
-    $identStart = str_repeat("  ", $depth);
+    $iter = function ($tree, $depth) use (&$iter){
+        $identStart = str_repeat("  ", $depth);
     $identEnd = str_repeat("  ", $depth - 1);
-    $result = array_map(function ($node) use ($identStart, $depth, $identEnd) {
+    $lines = array_map(function ($node) use ($identStart, $depth, $identEnd, $iter) {
         $type = getCategory($node);
         $key = getKey($node);
         $value = getValue($node);
         if (is_array($value)) {
-            $value = getFormatStylish($value, $depth + 2);
-            $value = "{\n" . $identStart . $value . "\n" . $identStart . "  }";
+            $value = $iter($value, $depth + 2);
         }
 
         if ($type === "changed") {
             $value2 = getValue2($node);
+            if ($value === "") {
+                return "$identStart- $key:" . "\n" . "$identStart+ $key: $value2";
+            }
+            if ($value2 === "") {
+                return "$identStart- $key:" . "\n" . "$identStart+ $key:";
+            }
             return "$identStart- $key: $value" . "\n" . "$identStart+ $key: $value2";
         }
         if ($type  === "parent node") {
@@ -24,25 +30,36 @@ function getFormatStylish($tree, $depth = 1)
         }
     
         if ($type === "deleted") {
+            if ($value === "") {
+                return "$identStart- $key:";
+            }
             return "$identStart- $key: $value";
         }
     
         if ($type === "added") {
+            if ($value === "") {
+                return "$identStart+ $key:";
+            }
             return "$identStart+ $key: $value";
         }
     
         if ($type === "unchanged") {
-            return "$identStart  $key: " . $value;
+            if ($value === "") {
+                return "$identStart  $key:";
+            }
+            return "$identStart  $key: $value";
         }
-    
     }, $tree);
-    $result = implode("\n", $result);
-    return "$result";
+        $result = ["{", ...$lines, "{$identEnd}}"];
+        return implode("\n", $result);
+    };
+    $result = $iter($tree, 1);
+    return $result;
 }
 
 function getCategory($node)
 {
-    return array_key_exists("category", $node) ? $node["category"] : false;
+    return $node["category"];
 }
 
 function getKey($node)
