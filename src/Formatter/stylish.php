@@ -4,54 +4,41 @@ namespace Differ\Formatter\Stylish;
 
 function getFormatStylish($tree, $depth = 1)
 {
-    $ident = str_repeat("    ", $depth);
-    $result = array_map(function ($node) use ($ident, $depth) {
+    $identStart = str_repeat("  ", $depth);
+    $identEnd = str_repeat("  ", $depth - 1);
+    $result = array_map(function ($node) use ($identStart, $depth, $identEnd) {
         $type = getCategory($node);
-        if ($type === false) {
-            $key = toString($node[0]);
-            $value = toString($node[1]);
-            return "$ident  $key: $value";
-        }
         $key = getKey($node);
         $value = getValue($node);
         if (is_array($value)) {
-            $value = getFormatStylish($value, $depth + 1);
-        }
-        if (is_array($value) && gettype($key) !== "integer") {
-            $value = getFormatStylish($value, $depth + 1);
+            $value = getFormatStylish($value, $depth + 2);
+            $value = "{\n" . $identStart . $value . "\n" . $identStart . "  }";
         }
 
         if ($type === "changed") {
             $value2 = getValue2($node);
-            return "$ident- $key: $value" . "\n" . "$ident+ $key: $value2";
+            return "$identStart- $key: $value" . "\n" . "$identStart+ $key: $value2";
         }
         if ($type  === "parent node") {
-            return "$ident  $key: $value";
+            return "$identStart  $key: $value";
         }
     
         if ($type === "deleted") {
-            return "$ident- $key: $value";
+            return "$identStart- $key: $value";
         }
     
         if ($type === "added") {
-            return "$ident+ $key: $value";
+            return "$identStart+ $key: $value";
         }
     
         if ($type === "unchanged") {
-            return "$ident  $key: " . $value;
+            return "$identStart  $key: " . $value;
         }
     
     }, $tree);
     $result = implode("\n", $result);
-    return "{\n$result\n}\n";
-    }
-
-function getIndent($depth = 1, $replacer = "    ")
-{
-    $ident = str_repeat($replacer, $depth);
-    return $ident;
+    return "$result";
 }
-
 
 function getCategory($node)
 {

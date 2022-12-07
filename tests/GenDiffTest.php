@@ -18,7 +18,7 @@ class GenDiffTest extends TestCase
     {
         $file1 = $this->getFixtureFullPath('File1.json');
         $file2 = $this->getFixtureFullPath('File2.json');
-        $result = file_get_contents($this->getFixtureFullPath('ResultJsonFiles.json'));
+        $result = file_get_contents($this->getFixtureFullPath('ResultJsonfiles.json'));
 
         $diff = genDiff($file1, $file2);
         return $this->assertTrue($diff == $result);
