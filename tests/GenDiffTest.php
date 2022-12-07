@@ -13,7 +13,7 @@ class GenDiffTest extends TestCase
         $parts = [__DIR__, 'fixtures', $fixtureName];
         return realpath(implode('/', $parts));
     }
-    
+
     public function testJson2()
     {
         $file1 = $this->getFixtureFullPath('file1.json');

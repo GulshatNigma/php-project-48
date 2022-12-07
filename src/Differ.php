@@ -50,7 +50,7 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
 
 function getLines($fileContent)
 {
-    $iter = function ($fileContent) use (&$iter){
+    $iter = function ($fileContent) use (&$iter) {
         if (!is_array($fileContent)) {
             if ($fileContent === null) {
                 return "null";
