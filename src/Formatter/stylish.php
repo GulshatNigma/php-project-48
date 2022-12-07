@@ -2,23 +2,28 @@
 
 namespace Differ\Formatter\Stylish;
 
-function getFormatStylish($tree, $depth = 0)
+function getFormatStylish($tree, $depth = 1)
 {
     $ident = str_repeat("    ", $depth);
     $result = array_map(function ($node) use ($ident, $depth) {
         $type = getCategory($node);
+        if ($type === false) {
+            $key = toString($node[0]);
+            $value = toString($node[1]);
+            return "$ident  $key: $value";
+        }
         $key = getKey($node);
         $value = getValue($node);
         if (is_array($value)) {
+            $value = getFormatStylish($value, $depth + 1);
+        }
+        if (is_array($value) && gettype($key) !== "integer") {
             $value = getFormatStylish($value, $depth + 1);
         }
 
         if ($type === "changed") {
             $value2 = getValue2($node);
             return "$ident- $key: $value" . "\n" . "$ident+ $key: $value2";
-        }
-        if (is_array($value)) {
-            $value = getFormatStylish($value);
         }
         if ($type  === "parent node") {
             return "$ident  $key: $value";
@@ -33,7 +38,6 @@ function getFormatStylish($tree, $depth = 0)
         }
     
         if ($type === "unchanged") {
-            var_dump($value);
             return "$ident  $key: " . $value;
         }
     
@@ -51,7 +55,7 @@ function getIndent($depth = 1, $replacer = "    ")
 
 function getCategory($node)
 {
-    return $node["category"];
+    return array_key_exists("category", $node) ? $node["category"] : false;
 }
 
 function getKey($node)

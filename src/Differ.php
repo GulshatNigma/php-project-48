@@ -28,6 +28,10 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
 {
     $file1Value = $file1Content[$key] ?? null;
     $file2Value = $file2Content[$key] ?? null;
+    if (is_array($file1Value) && is_array($file2Value)) {
+        $value = getUniqueKeysOfFiles($file1Value, $file2Value);
+        return ["category" => "parent node", "key" => $key, "value" => $value];
+    }
     if (!array_key_exists($key, $file2Content)) {
         $value = getLines($file1Value);
         return ["category" => "deleted", "key" => $key, "value" => $value];
@@ -35,10 +39,6 @@ function makeDifferenceCheck($file1Content, $file2Content, $key)
     if (!array_key_exists($key, $file1Content)) {
         $value = getLines($file2Value);
         return ["category" => "added", "key" => $key, "value" => $value];
-    }
-    if (is_array($file1Value) && is_array($file2Value)) {
-        $value = getUniqueKeysOfFiles($file1Value, $file2Value);
-        return ["category" => "parent node", "key" => $key, "value" => $value];
     }
     if ($file1Value !== $file2Value) {
         $value1 = getLines($file1Value) ?? null;
@@ -62,7 +62,7 @@ function getLines($fileContent)
                 if (is_array($value)) {
                     $value = $iter($value);
                 }
-                return [$key, $value];
+                return ["category" => "unchanged", "key" => $key, "value" => $value];
             },
             $filesKeys
         );
