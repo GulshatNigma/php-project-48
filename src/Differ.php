@@ -5,6 +5,7 @@ namespace Differ\Differ;
 use function Functional\flatten;
 use function Differ\Parsers\parseFile;
 use function Differ\Formatter\Stylish\getFormatStylish;
+use function Differ\Formatter\Plain\getFormatPlain;
 
 function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
 {
@@ -12,6 +13,9 @@ function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
     $file2Content = parseFile(realpath($pathToFile2));
 
     $result = getUniqueKeysOfFiles($file1Content, $file2Content);
+    if ($format === "plain") {
+        return getFormatPlain($result);
+    }
     return getFormatStylish($result);
 }
 
