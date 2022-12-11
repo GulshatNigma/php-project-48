@@ -13,3 +13,7 @@ make test:
 [![asciicast](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF.svg)](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF)
 For YAML files
 [![asciicast](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE.svg)](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE)
+
+
+--format plain
+[![asciicast](https://asciinema.org/a/TmyUAsMj8oQO5SV6DvKAnMLih.svg)](https://asciinema.org/a/TmyUAsMj8oQO5SV6DvKAnMLih)

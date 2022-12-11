@@ -13,38 +13,46 @@ function getFormatPlain($tree)
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
-            if ($type  === "parent node") {
-                if (is_array($value)) {
-                    $lastKey .= "$key.";
-                    $value = $iter($value, $lastKey);
-                }
-                return "$value";
-            }
-            $value = is_array($value) ? "[complex value]": "'$value'";
-
-            if ($type === "changed") {
-                $value2 = getValue2($node);
-                $value2 = is_array($value2) ? "[complex value]": "'$value2'";
-                return "Property '$string$key' was updated. From $value to $value2";
-            }
-
-            if ($type === "deleted") {
-                return "Property '$string$key' was removed";
-            }
-
-            if ($type === "added") {
-
-                return "Property '$string$key' was added with value: $value";
-            }
-
-            if ($type === "unchanged") {
+            $value = getNormalValue($value, $type);
+            switch ($type) {
+                case "parent node":
+                    if (is_array($value)) {
+                        $lastKey .= "$key.";
+                        $value = $iter($value, $lastKey);
+                    }
+                    return "$value";
+                case "changed":
+                    $value2 = getValue2($node);
+                    $value2 = getNormalValue($value2, $type);
+                    return "Property '$string$key' was updated. From $value to $value2";
+                case "deleted":
+                    return "Property '$string$key' was removed";
+                case "added":
+                    return "Property '$string$key' was added with value: $value";
+                case "unchanged":
+                    break;
             }
         }, $tree);
         $line = [...$lines];
+        $line = array_filter($line, fn($string) => $string !== null);
         return implode("\n", $line);
     };
     $result = $iter($tree);
     return $result;
+}
+
+function getNormalValue($value, $type)
+{
+    $value = gettype($value) === 'string' ? "'$value'" : $value;
+    $value = is_array($value) && $type !== "parent node" ? "[complex value]": $value;
+    if ($value === "'false'") {
+        $value = "false";
+    } elseif ($value === "'true'") {
+        $value = "true";
+    } elseif ($value === "'null'") {
+        $value = "null";
+    }
+    return $value;
 }
 
 function getCategory($node)
