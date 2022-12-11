@@ -6,6 +6,7 @@ use function Functional\flatten;
 use function Differ\Parsers\parseFile;
 use function Differ\Formatter\Stylish\getFormatStylish;
 use function Differ\Formatter\Plain\getFormatPlain;
+use function Differ\Formatter\Plain\getFormatJson;
 
 function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
 {
@@ -15,6 +16,10 @@ function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
     $result = getUniqueKeysOfFiles($file1Content, $file2Content);
     if ($format === "plain") {
         return getFormatPlain($result);
+    }
+
+    if ($format === "json") {
+        return getFormatJson($result);
     }
     return getFormatStylish($result);
 }

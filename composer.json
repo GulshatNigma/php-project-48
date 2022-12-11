@@ -7,7 +7,8 @@
                   "src/Cli.php",
                   "src/Parsers.php",
                   "src/Formatter/Stylish.php",
-                  "src/Formatter/Plain.php"]
+                  "src/Formatter/Plain.php",
+                  "src/Formatter/Json.php"]
     },
     "authors": [
         {
