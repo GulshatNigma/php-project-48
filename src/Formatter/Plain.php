@@ -44,7 +44,7 @@ function getFormatPlain($tree)
 function getNormalValue($value, $type)
 {
     $value = gettype($value) === 'string' ? "'$value'" : $value;
-    $value = is_array($value) && $type !== "parent node" ? "[complex value]": $value;
+    $value = is_array($value) && $type !== "parent node" ? "[complex value]" : $value;
     if ($value === "'false'") {
         $value = "false";
     } elseif ($value === "'true'") {
