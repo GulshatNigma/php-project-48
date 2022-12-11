@@ -1,0 +1,152 @@
+[
+    {
+        "category": "parent node",
+        "key": "common",
+        "value": [
+            {
+                "category": "added",
+                "key": "follow",
+                "value": "false"
+            },
+            {
+                "category": "unchanged",
+                "key": "setting1",
+                "value": "Value 1"
+            },
+            {
+                "category": "deleted",
+                "key": "setting2",
+                "value": "200"
+            },
+            {
+                "category": "changed",
+                "key": "setting3",
+                "value": "true",
+                "value2": "null"
+            },
+            {
+                "category": "added",
+                "key": "setting4",
+                "value": "blah blah"
+            },
+            {
+                "category": "added",
+                "key": "setting5",
+                "value": [
+                    {
+                        "category": "unchanged",
+                        "key": "key5",
+                        "value": "value5"
+                    }
+                ]
+            },
+            {
+                "category": "parent node",
+                "key": "setting6",
+                "value": [
+                    {
+                        "category": "parent node",
+                        "key": "doge",
+                        "value": [
+                            {
+                                "category": "changed",
+                                "key": "wow",
+                                "value": "",
+                                "value2": "so much"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "unchanged",
+                        "key": "key",
+                        "value": "value"
+                    },
+                    {
+                        "category": "added",
+                        "key": "ops",
+                        "value": "vops"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "category": "parent node",
+        "key": "group1",
+        "value": [
+            {
+                "category": "changed",
+                "key": "baz",
+                "value": "bas",
+                "value2": "bars"
+            },
+            {
+                "category": "unchanged",
+                "key": "foo",
+                "value": "bar"
+            },
+            {
+                "category": "changed",
+                "key": "nest",
+                "value": [
+                    {
+                        "category": "unchanged",
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "value2": "str"
+            }
+        ]
+    },
+    {
+        "category": "deleted",
+        "key": "group2",
+        "value": [
+            {
+                "category": "unchanged",
+                "key": "abc",
+                "value": 12345
+            },
+            {
+                "category": "unchanged",
+                "key": "deep",
+                "value": [
+                    {
+                        "category": "unchanged",
+                        "key": "id",
+                        "value": 45
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "category": "added",
+        "key": "group3",
+        "value": [
+            {
+                "category": "unchanged",
+                "key": "deep",
+                "value": [
+                    {
+                        "category": "unchanged",
+                        "key": "id",
+                        "value": [
+                            {
+                                "category": "unchanged",
+                                "key": "number",
+                                "value": 45
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "category": "unchanged",
+                "key": "fee",
+                "value": 100500
+            }
+        ]
+    }
+]

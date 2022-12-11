@@ -2,4 +2,7 @@
 
 namespace Differ\Formatter\Json;
 
-function getFormatPlain();
+function getFormatJson($tree)
+{
+    return json_encode($tree, JSON_PRETTY_PRINT);
+}

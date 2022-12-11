@@ -44,4 +44,15 @@ class GenDiffTest extends TestCase
         $diff = genDiff($file1, $file2, $format);
         return $this->assertEquals($result, $diff);
     }
+
+    public function testJsonJson()
+    {
+        $file1 = $this->getFixtureFullPath('file1.json');
+        $file2 = $this->getFixtureFullPath('file2.json');
+        $result = file_get_contents($this->getFixtureFullPath('resultJsonFilesJson.json'));
+
+        $format = "json";
+        $diff = genDiff($file1, $file2, $format);
+        return $this->assertEquals($result, $diff);
+    }
 }
