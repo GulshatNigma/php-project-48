@@ -4,12 +4,11 @@ namespace Differ\Formatter\Plain;
 
 function getFormatPlain($tree)
 {
-    $iter = function ($tree) use (&$iter) {
-        $lines = array_map(function ($node, $lastKey = "") use ($iter) {
-            $string = "Property '";
+    $iter = function ($tree, $lastKey = "") use (&$iter) {
+        $lines = array_map(function ($node) use ($iter, $lastKey) {
+            $string = "";
             if ($lastKey !== "") {
-                $string .= "$lastKey." ;
-                var_dump($string);
+                $string .= "$lastKey" ;
             }
             $type = getCategory($node);
             $key = getKey($node);
@@ -19,30 +18,26 @@ function getFormatPlain($tree)
                     $lastKey .= "$key.";
                     $value = $iter($value, $lastKey);
                 }
-                return $string . "$value";
+                return "$value";
             }
             $value = is_array($value) ? "[complex value]": "'$value'";
 
             if ($type === "changed") {
                 $value2 = getValue2($node);
                 $value2 = is_array($value2) ? "[complex value]": "'$value2'";
-                return $string . "$key' was updated. From $value to $value2";
+                return "Property '$string$key' was updated. From $value to $value2";
             }
 
             if ($type === "deleted") {
-                return $string . "$key' was removed";
+                return "Property '$string$key' was removed";
             }
 
             if ($type === "added") {
-                if (is_array($value)) {
-                    $lastKey .= "$key.";
-                    $value = $iter($value, $lastKey);
-                }
-                return $string . "$key' was added with value: $value";
+
+                return "Property '$string$key' was added with value: $value";
             }
 
             if ($type === "unchanged") {
-                
             }
         }, $tree);
         $line = [...$lines];
