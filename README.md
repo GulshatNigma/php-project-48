@@ -4,16 +4,19 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a328485cbd025259bd66/maintainability)](https://codeclimate.com/github/GulshatNigma/php-project-48/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a328485cbd025259bd66/test_coverage)](https://codeclimate.com/github/GulshatNigma/php-project-48/test_coverage)
 
-Рекурсивное сравнение:
-[![asciicast](https://asciinema.org/a/n99sNmNzwA0dXfH0memHVoKZe.svg)](https://asciinema.org/a/n99sNmNzwA0dXfH0memHVoKZe)
+### Вычислитель отличий
+Вычислитель отличий - программа, определяющая разницу между двумя структурами данных. 
+Поддерживает входные данные форматов: yaml и json.
+Отчет генерируется в виде stylish (по умолчанию), plain и json.
 
-make test:
-[![asciicast](https://asciinema.org/a/7aUW5UXpQ5wjj02T260J2y8cJ.svg)](https://asciinema.org/a/7aUW5UXpQ5wjj02T260J2y8cJ)
+## Минимальные требования
+1. PHP версии 7.4.0 (и выше)
+2. Composer
 
-[![asciicast](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF.svg)](https://asciinema.org/a/i7fz1OSIHsjbJ5p6LJrrGYOeF)
-For YAML files
-[![asciicast](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE.svg)](https://asciinema.org/a/EJQM8nCvrSHiXbMVwViqAEjvE)
-
-
---format plain
-[![asciicast](https://asciinema.org/a/TmyUAsMj8oQO5SV6DvKAnMLih.svg)](https://asciinema.org/a/TmyUAsMj8oQO5SV6DvKAnMLih)
+## Инструкция по установке и запуску
+```
+$ git clone git@github.com:GulshatNigma/php-project-48.git
+$ cd php-project-48
+$ make install
+```
+## Пример использования

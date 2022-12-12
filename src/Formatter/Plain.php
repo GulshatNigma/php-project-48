@@ -40,16 +40,16 @@ function normalizeValue($value, $type)
 {
     if (gettype($value) === 'string') {
         $value = "'$value'";
-    } 
+    }
     if (is_array($value) && $type !== "parent node") {
         $value = "[complex value]";
-    } 
+    }
     if ($value === "'false'") {
         $value = "false";
-    } 
+    }
     if ($value === "'true'") {
         $value = "true";
-    } 
+    }
     if ($value === "'null'") {
         $value = "null";
     }
