@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"Differ\\Tests\\GenDiffTest::testJsonStylish":0.023,"Differ\\Tests\\GenDiffTest::testYamlStylish":0.195,"Differ\\Tests\\GenDiffTest::testJsonPlain":0.002,"Differ\\Tests\\GenDiffTest::testJsonJson":0.002}}
+{"version":1,"defects":{"Differ\\Tests\\GenDiffTest::testJsonStylish":3,"Differ\\Tests\\GenDiffTest::testJsonPlain":3},"times":{"Differ\\Tests\\GenDiffTest::testJsonStylish":0.013,"Differ\\Tests\\GenDiffTest::testYamlStylish":0.017,"Differ\\Tests\\GenDiffTest::testJsonPlain":0.002,"Differ\\Tests\\GenDiffTest::testJsonJson":0.002}}

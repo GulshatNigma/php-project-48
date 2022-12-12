@@ -30,6 +30,6 @@ function runCli()
     $pathToFile2 = $args['<secondFile>'];
     $format = $args['--format'];
 
-    $diff = genDiff($pathToFile1, $pathToFile2, $format);
-    echo($diff);
+    $difference = genDiff($pathToFile1, $pathToFile2, $format);
+    echo($difference);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Parsers;
+namespace Differ\Parser;
 
 use Exception;
 use Symfony\Component\Yaml\Yaml;
@@ -10,12 +10,12 @@ function parseFile($absolutePathToFile)
     $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
     switch ($expansion) {
         case "json":
-            $fileContents = file_get_contents($absolutePathToFile);
-            return json_decode($fileContents, $associative = true);
+            $fileContent = file_get_contents($absolutePathToFile);
+            return json_decode($fileContent, $associative = true);
         case "yaml":
-            return $fileContents = Yaml::parseFile($absolutePathToFile);
+            return Yaml::parseFile($absolutePathToFile);
         case "yml":
-            return $fileContents = Yaml::parseFile($absolutePathToFile);
+            return Yaml::parseFile($absolutePathToFile);
         default:
             throw new Exception("Unknown expansion");
     }

@@ -2,12 +2,12 @@
 
 namespace Differ\Formatter\Stylish;
 
-function getFormatStylish($tree, $depth = 1)
+function getFormat($tree, $depth = 1)
 {
     $iter = function ($tree, $depth) use (&$iter) {
         $identStart = str_repeat("  ", $depth);
         $identEnd = str_repeat("  ", $depth - 1);
-        $lines = array_map(function ($node) use ($identStart, $depth, $identEnd, $iter) {
+        $lines = array_map(function ($node) use ($identStart, $depth, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
@@ -17,36 +17,22 @@ function getFormatStylish($tree, $depth = 1)
 
             if ($type === "changed") {
                 $value2 = getValue2($node);
-                if ($value === "") {
-                    return "$identStart- $key:" . "\n" . "$identStart+ $key: $value2";
-                }
-                if ($value2 === "") {
-                    return "$identStart- $key:" . "\n" . "$identStart+ $key:";
-                }
-                return "$identStart- $key: $value" . "\n" . "$identStart+ $key: $value2";
+                return "$identStart- $key:" . normalizeValue($value) . "\n$identStart+ $key:" . normalizeValue($value2);
             }
+
             if ($type  === "parent node") {
                 return "$identStart  $key: $value";
             }
 
             if ($type === "deleted") {
-                if ($value === "") {
-                    return "$identStart- $key:";
-                }
                 return "$identStart- $key: $value";
             }
 
             if ($type === "added") {
-                if ($value === "") {
-                    return "$identStart+ $key:";
-                }
                 return "$identStart+ $key: $value";
             }
 
             if ($type === "unchanged") {
-                if ($value === "") {
-                    return "$identStart  $key:";
-                }
                 return "$identStart  $key: $value";
             }
         }, $tree);
@@ -77,7 +63,7 @@ function getValue2($node)
     return $node["value2"];
 }
 
-function toString($value)
+function normalizeValue($value)
 {
-    return trim(var_export($value, true), "'");
+    return $value === "" ? "$value" : " $value";
 }

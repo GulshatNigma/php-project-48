@@ -2,43 +2,47 @@
 
 namespace Differ\Differ;
 
-use function Functional\flatten;
-use function Differ\Parsers\parseFile;
-use function Differ\Formatter\Stylish\getFormatStylish;
-use function Differ\Formatter\Plain\getFormatPlain;
-use function Differ\Formatter\Json\getFormatJson;
+use function Differ\Parser\parseFile;
+use function Differ\Formatter\Stylish\getFormat as getFormatStylish;
+use function Differ\Formatter\Plain\getFormat as getFormatPlain;
+use function Differ\Formatter\Json\getFormat as getFormatJson;
 
 function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
 {
     $file1Content = parseFile(realpath($pathToFile1));
     $file2Content = parseFile(realpath($pathToFile2));
 
-    $result = getUniqueKeysOfFiles($file1Content, $file2Content);
-    if ($format === "plain") {
-        return getFormatPlain($result);
-    }
-
-    if ($format === "json") {
-        return getFormatJson($result);
-    }
-    return getFormatStylish($result);
+    $differenceTree = builDifferenceTree($file1Content, $file2Content);
+    return getDesiredFormat($format, $differenceTree);
 }
 
-function getUniqueKeysOfFiles($file1Content, $file2Content)
+function builDifferenceTree($file1Content, $file2Content)
 {
     $file1Keys = array_keys($file1Content);
     $file2Keys = array_keys($file2Content);
     $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
     sort($filesKeys, SORT_STRING);
-    return array_map(fn($key) => makeDifferenceCheck($file1Content, $file2Content, $key), $filesKeys);
+    return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $filesKeys);
 }
 
-function makeDifferenceCheck($file1Content, $file2Content, $key)
+function getDesiredFormat($format, $differenceTree)
+{
+    switch ($format) {
+        case "plain":
+            return getFormatPlain($differenceTree);
+        case "json":
+            return getFormatJson($differenceTree);
+        case "stylish":
+            return getFormatStylish($differenceTree);
+    }
+}
+
+function findDifference($file1Content, $file2Content, $key)
 {
     $file1Value = $file1Content[$key] ?? null;
     $file2Value = $file2Content[$key] ?? null;
     if (is_array($file1Value) && is_array($file2Value)) {
-        $value = getUniqueKeysOfFiles($file1Value, $file2Value);
+        $value = builDifferenceTree($file1Value, $file2Value);
         return ["category" => "parent node", "key" => $key, "value" => $value];
     }
     if (!array_key_exists($key, $file2Content)) {
@@ -61,12 +65,9 @@ function getLines($fileContent)
 {
     $iter = function ($fileContent) use (&$iter) {
         if (!is_array($fileContent)) {
-            if ($fileContent === null) {
-                return "null";
-            }
             return toString($fileContent);
         }
-        $filesKeys = array_keys($fileContent);
+        $fileKeys = array_keys($fileContent);
         return array_map(
             function ($key) use ($fileContent, $iter) {
                 $value = $fileContent[$key];
@@ -75,7 +76,7 @@ function getLines($fileContent)
                 }
                 return ["category" => "unchanged", "key" => $key, "value" => $value];
             },
-            $filesKeys
+            $fileKeys
         );
     };
     return $iter($fileContent);
@@ -83,5 +84,5 @@ function getLines($fileContent)
 
 function toString($value)
 {
-    return trim(var_export($value, true), "'");
+    return $value === null ? "null" : trim(var_export($value, true), "'");
 }
