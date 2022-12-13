@@ -5,9 +5,9 @@ namespace Differ\Formatter\Stylish;
 function getFormat($tree, $depth = 1)
 {
     $iter = function ($tree, $depth) use (&$iter) {
-        $identStart = str_repeat("  ", $depth);
-        $identEnd = str_repeat("  ", $depth - 1);
-        $lines = array_map(function ($node) use ($identStart, $depth, $iter) {
+        $indentStart = str_repeat("  ", $depth);
+        $indentEnd = str_repeat("  ", $depth - 1);
+        $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
@@ -18,28 +18,28 @@ function getFormat($tree, $depth = 1)
             if ($type === "changed") {
                 $value2 = getValue2($node);
                 if ($value === "") {
-                    return "$identStart- $key:$value\n$identStart+ $key: $value2";
+                    return "$indentStart- $key:" . "\n" . "$indentStart+ $key: $value2";
                 }
-                return "$identStart- $key: " . $value . "\n$identStart+ $key: " . $value2;
+                return "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
             }
 
             if ($type  === "parent node") {
-                return "$identStart  $key: $value";
+                return "$indentStart  $key: $value";
             }
 
             if ($type === "deleted") {
-                return "$identStart- $key: $value";
+                return "$indentStart- $key: $value";
             }
 
             if ($type === "added") {
-                return "$identStart+ $key: $value";
+                return "$indentStart+ $key: $value";
             }
 
             if ($type === "unchanged") {
-                return "$identStart  $key: $value";
+                return "$indentStart  $key: $value";
             }
         }, $tree);
-        $result = ["{", ...$lines, "{$identEnd}}"];
+        $result = ["{", ...$lines, "{$indentEnd}}"];
         return implode("\n", $result);
     };
     $result = $iter($tree, 1);

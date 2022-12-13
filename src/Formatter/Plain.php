@@ -24,7 +24,7 @@ function getFormat($tree)
                     return "Property '$parentKey$key' was removed";
                 case "added":
                     return "Property '$parentKey$key' was added with value: $value";
-                case "unchanged":
+                default:
                     break;
             }
         }, $tree);
@@ -44,16 +44,15 @@ function normalizeValue($value, $type)
     if (is_array($value) && $type !== "parent node") {
         $value = "[complex value]";
     }
-    if ($value === "'false'") {
-        $value = "false";
-    }
-    if ($value === "'true'") {
-        $value = "true";
-    }
-    if ($value === "'null'") {
-        $value = "null";
+    if ($value === "'false'" || $value === "'true'" || $value === "'null'") {
+        $value = toString($value);
     }
     return $value;
+}
+
+function toString($value)
+{
+    return trim($value, "'");
 }
 
 function getCategory($node)
