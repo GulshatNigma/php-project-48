@@ -43,7 +43,7 @@ function getFormat($tree, $depth = 1)
         return implode("\n", $result);
     };
     $result = $iter($tree, 1);
-    return $result . "\n";
+    return $result;
 }
 
 function getCategory($node)
