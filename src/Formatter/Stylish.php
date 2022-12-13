@@ -7,7 +7,7 @@ function getFormat($tree, $depth = 1)
     $iter = function ($tree, $depth) use (&$iter) {
         $indentStart = str_repeat("  ", $depth);
         $indentEnd = str_repeat("  ", $depth - 1);
-        $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
+        $lines = array_map(function ($node) use ($indentStart, $depth, $indentEnd, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
@@ -42,8 +42,9 @@ function getFormat($tree, $depth = 1)
         $result = ["{", ...$lines, "{$indentEnd}}"];
         return implode("\n", $result);
     };
-    $result = $iter($tree, 1);
-    return $result;
+    $line = $iter($tree, 1);
+    var_dump($line);
+    return $line;
 }
 
 function getCategory($node)

@@ -31,5 +31,5 @@ function runCli()
     $format = $args['--format'];
 
     $difference = genDiff($pathToFile1, $pathToFile2, $format);
-    echo($difference);
+    print_r($difference);
 }
