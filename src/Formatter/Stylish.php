@@ -17,7 +17,10 @@ function getFormat($tree, $depth = 1)
 
             if ($type === "changed") {
                 $value2 = getValue2($node);
-                return "$identStart- $key:" . normalizeValue($value) . "\n$identStart+ $key:" . normalizeValue($value2);
+                if ($value === "") {
+                    return "$identStart- $key:$value\n$identStart+ $key: $value2";
+                }
+                return "$identStart- $key: $value\n$identStart+ $key: $value2";;
             }
 
             if ($type  === "parent node") {
@@ -61,12 +64,4 @@ function getValue($node)
 function getValue2($node)
 {
     return $node["value2"];
-}
-
-function normalizeValue($value)
-{
-    if (!is_array($value)) {
-        return $value === "" ? "$value" : " $value";
-    }
-    return $value;
 }
