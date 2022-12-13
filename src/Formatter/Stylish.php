@@ -20,7 +20,7 @@ function getFormat($tree, $depth = 1)
                 if ($value === "") {
                     return "$identStart- $key:$value\n$identStart+ $key: $value2";
                 }
-                return "$identStart- $key: $value\n$identStart+ $key: $value2";;
+                return "$identStart- $key: $value\n$identStart+ $key: $value2";
             }
 
             if ($type  === "parent node") {
