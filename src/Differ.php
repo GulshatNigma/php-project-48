@@ -41,24 +41,22 @@ function findDifference($file1Content, $file2Content, $key)
 {
     $file1Value = $file1Content[$key] ?? null;
     $file2Value = $file2Content[$key] ?? null;
+    $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
     if (is_array($file1Value) && is_array($file2Value)) {
         $value = builDifferenceTree($file1Value, $file2Value);
-        return ["category" => "parent node", "key" => $key, "value" => $value];
-    }
-    if (!array_key_exists($key, $file2Content)) {
+        $difference = ["category" => "parent node", "key" => $key, "value" => $value];
+    } elseif (!array_key_exists($key, $file2Content)) {
         $value = getLines($file1Value);
-        return ["category" => "deleted", "key" => $key, "value" => $value];
-    }
-    if (!array_key_exists($key, $file1Content)) {
+        $difference = ["category" => "deleted", "key" => $key, "value" => $value];
+    } elseif (!array_key_exists($key, $file1Content)) {
         $value = getLines($file2Value);
-        return ["category" => "added", "key" => $key, "value" => $value];
-    }
-    if ($file1Value !== $file2Value) {
+        $difference = ["category" => "added", "key" => $key, "value" => $value];
+    } elseif ($file1Value !== $file2Value) {
         $value1 = getLines($file1Value) ?? null;
         $value2 = getLines($file2Value) ?? null;
-        return ["category" => "changed",  "key" => $key, "value" => $value1, "value2" => $value2,];
+        $difference = ["category" => "changed",  "key" => $key, "value" => $value1, "value2" => $value2,];
     }
-    return ["category" => "unchanged", "key" => $key, "value" => $file1Value];
+    return $difference;
 }
 
 function getLines($fileContent)
