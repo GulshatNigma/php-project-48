@@ -5,8 +5,8 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a328485cbd025259bd66/test_coverage)](https://codeclimate.com/github/GulshatNigma/php-project-48/test_coverage)
 
 ### Вычислитель отличий
-Вычислитель отличий - программа, определяющая разницу между двумя структурами данных. 
-Поддерживает входные данные форматов: yaml и json.
+Вычислитель отличий - программа, определяющая разницу между двумя структурами данных.<br>
+Поддерживает входные данные форматов: yaml и json.<br>
 Отчет генерируется в виде stylish (по умолчанию), plain и json.
 
 ## Минимальные требования
@@ -20,3 +20,23 @@ $ cd php-project-48
 $ make install
 ```
 ## Пример использования
+<b>Сравнение плоских файлов (JSON, YAML):</b><br>
+[![asciicast](https://asciinema.org/a/DI4KKH6kpqIUiygjobarY3t7D.svg)](https://asciinema.org/a/DI4KKH6kpqIUiygjobarY3t7D)
+<br>
+<br>
+<b>Рекурсивное сравнение (JSON, YAML)</b><br>
+[![asciicast](https://asciinema.org/a/l06Si6SeU0dEysGqCqnhXV3g4.svg)](https://asciinema.org/a/l06Si6SeU0dEysGqCqnhXV3g4)
+<br>
+<br>
+<b>Плоский формат отчета(--format plain)</b><br>
+[![asciicast](https://asciinema.org/a/oVyqIHhj7jHS6BZjKGtJN2ibR.svg)](https://asciinema.org/a/oVyqIHhj7jHS6BZjKGtJN2ibR)
+<br>
+<br>
+<b>Формат отчета json (--format json)</b><br>
+[![asciicast](https://asciinema.org/a/5JiHc58y1FpuNkM9qFzUTF3QC.svg)](https://asciinema.org/a/5JiHc58y1FpuNkM9qFzUTF3QC)
+<br>
+<br>
+Для вывода справочной информации введите gendiff с флагом -h:<br>
+```
+gendiff -h
+```

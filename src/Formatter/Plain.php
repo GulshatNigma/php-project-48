@@ -33,7 +33,7 @@ function getFormat($tree)
         return implode("\n", $line);
     };
     $result = $iter($tree);
-    return $result;
+    return $result . "\n";
 }
 
 function normalizeValue($value, $type)

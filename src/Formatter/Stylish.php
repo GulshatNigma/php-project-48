@@ -40,7 +40,7 @@ function getFormat($tree, $depth = 1)
         return implode("\n", $result);
     };
     $result = $iter($tree, 1);
-    return $result;
+    return $result . "\n";
 }
 
 function getCategory($node)
@@ -65,5 +65,8 @@ function getValue2($node)
 
 function normalizeValue($value)
 {
-    return $value === "" ? "$value" : " $value";
+    if (!is_array($value)) {
+        return $value === "" ? "$value" : " $value";
+    }
+    return $value;
 }
