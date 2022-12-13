@@ -41,7 +41,6 @@ function findDifference($file1Content, $file2Content, $key)
 {
     $file1Value = $file1Content[$key] ?? null;
     $file2Value = $file2Content[$key] ?? null;
-    $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
     if (is_array($file1Value) && is_array($file2Value)) {
         $value = builDifferenceTree($file1Value, $file2Value);
         $difference = ["category" => "parent node", "key" => $key, "value" => $value];
@@ -55,6 +54,8 @@ function findDifference($file1Content, $file2Content, $key)
         $value1 = getLines($file1Value) ?? null;
         $value2 = getLines($file2Value) ?? null;
         $difference = ["category" => "changed",  "key" => $key, "value" => $value1, "value2" => $value2,];
+    } else {
+        $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
     }
     return $difference;
 }
