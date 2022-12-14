@@ -25,12 +25,14 @@ function getFormat($tree, $depth = 1)
 
 function getResultByType($type, $indentStart, $key, $value, $node)
 {
+    $value = toString($value);
     switch ($type) {
         case "parent node":
             $result =  "$indentStart  $key: $value";
             break;
         case "changed":
-            $value2 = getValue2($node);
+            $value2 = toString(getValue2($node));
+            var_dump($value);
             $line1 = "$indentStart- $key:" . "\n" . "$indentStart+ $key: $value2";
             $line2 = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
             $result = $value === "" ? $line1 : $line2;
@@ -68,4 +70,9 @@ function getValue($node)
 function getValue2($node)
 {
     return $node["value2"];
+}
+
+function toString($value)
+{
+    return $value === null ? "null" : trim(var_export($value, true), "'");
 }
