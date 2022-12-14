@@ -32,7 +32,6 @@ function getResultByType($type, $indentStart, $key, $value, $node)
             break;
         case "changed":
             $value2 = toString(getValue2($node));
-            var_dump($value);
             $line1 = "$indentStart- $key:" . "\n" . "$indentStart+ $key: $value2";
             $line2 = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
             $result = $value === "" ? $line1 : $line2;

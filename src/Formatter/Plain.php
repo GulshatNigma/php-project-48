@@ -9,24 +9,16 @@ function getFormat($tree)
             $type = getCategory($node);
             $key = getKey($node);
             $value = normalizeValue(getValue($node), $type);
-            switch ($type) {
-                case "parent node":
-                    if (is_array($value)) {
-                        $parentKey .= "$key.";
-                        $value = $iter($value, $parentKey);
-                    }
-                    return "$value";
-                case "changed":
-                    $value2 = getValue2($node);
-                    $value2 = normalizeValue($value2, $type);
-                    return "Property '$parentKey$key' was updated. From $value to $value2";
-                case "deleted":
-                    return "Property '$parentKey$key' was removed";
-                case "added":
-                    return "Property '$parentKey$key' was added with value: $value";
-                default:
-                    break;
+            if ($type === "parent node") {
+                if (is_array($value)) {
+                    $parentKey .= "$key.";
+                    $value = $iter($value, $parentKey);
+                }
+                $resultLine = "$value";
+            } else {
+                $resultLine = getResultByType($type, $key, $value, $node, $parentKey);
             }
+            return $resultLine;
         }, $tree);
         $line = [...$lines];
         $line = array_filter($line, fn($path) => $path !== null);
@@ -34,6 +26,22 @@ function getFormat($tree)
     };
     $result = $iter($tree);
     return $result . "\n";
+}
+
+function getResultByType($type, $key, $value, $node, $parentKey)
+{
+    switch ($type) {
+        case "changed":
+            $value2 = getValue2($node);
+            $value2 = normalizeValue($value2, $type);
+            return "Property '$parentKey$key' was updated. From $value to $value2";
+        case "deleted":
+            return "Property '$parentKey$key' was removed";
+        case "added":
+            return "Property '$parentKey$key' was added with value: $value";
+        default:
+            break;
+    }
 }
 
 function normalizeValue($value, $type)
