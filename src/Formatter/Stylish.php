@@ -5,73 +5,54 @@ namespace Differ\Formatter\Stylish;
 function getFormat($tree, $depth = 1)
 {
     $iter = function ($tree, $depth) use (&$iter) {
-        $indentStart = str_repeat("  ", $depth);
-        $indentEnd = str_repeat("  ", $depth - 1);
-        $lines = array_map(function ($node) use ($indentStart, $depth, $indentEnd, $iter) {
+        $identStart = str_repeat("  ", $depth);
+        $identEnd = str_repeat("  ", $depth - 1);
+        $lines = array_map(function ($node) use ($identStart, $depth, $identEnd, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
             if (is_array($value)) {
                 $value = $iter($value, $depth + 2);
             }
-            return getResultByType($type, $indentStart, $key, $value, $node);
+            if ($type === "changed") {
+                $value2 = getValue2($node);
+                return "$identStart- $key: $value" . "\n" . "$identStart+ $key: $value2";
+            }
+            if ($type  === "parent node") {
+                return "$identStart  $key: $value";
+            }
+
+            if ($type === "deleted") {
+                return "$identStart- $key: $value";
+            }
+
+            if ($type === "added") {
+                return "$identStart+ $key: $value";
+            }
+
+            if ($type === "unchanged") {
+                return "$identStart  $key: $value";
+            }
         }, $tree);
-        $result = ["{", ...$lines, "{$indentEnd}}"];
+        $result = ["{", ...$lines, "{$identEnd}}"];
         return implode("\n", $result);
     };
-    $line = $iter($tree, 1);
-    return $line;
+    $result = $iter($tree, 1);
+    return $result;
 }
-
-function getResultByType($type, $indentStart, $key, $value, $node)
-{
-    $value = toString($value);
-    switch ($type) {
-        case "parent node":
-            $result =  "$indentStart  $key: $value";
-            break;
-        case "changed":
-            $value2 = toString(getValue2($node));
-            $line1 = "$indentStart- $key:" . "\n" . "$indentStart+ $key: $value2";
-            $line2 = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
-            $result = $value === "" ? $line1 : $line2;
-            break;
-        case "deleted":
-            $result = "$indentStart- $key: $value";
-            break;
-        case "added":
-            $result = "$indentStart+ $key: $value";
-            break;
-        case "unchanged":
-            $result = "$indentStart  $key: $value";
-            break;
-        default:
-            break;
-    }
-        return $result;
-}
-
 function getCategory($node)
 {
     return $node["category"];
 }
-
 function getKey($node)
 {
     return $node["key"];
 }
-
 function getValue($node)
 {
     return $node["value"];
 }
-
 function getValue2($node)
 {
     return $node["value2"];
-}
-
-function toString($value)
-{
-    return $value === null ? "null" : trim(var_export($value, true), "'");
 }

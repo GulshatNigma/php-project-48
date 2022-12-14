@@ -11,7 +11,6 @@ function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
 {
     $file1Content = parseFile(realpath($pathToFile1));
     $file2Content = parseFile(realpath($pathToFile2));
-
     $differenceTree = builDifferenceTree($file1Content, $file2Content);
     return getDesiredFormat($format, $differenceTree);
 }
@@ -45,14 +44,14 @@ function findDifference($file1Content, $file2Content, $key)
         $value = builDifferenceTree($file1Value, $file2Value);
         $difference = ["category" => "parent node", "key" => $key, "value" => $value];
     } elseif (!array_key_exists($key, $file2Content)) {
-        $value = getLines($file1Value);
+        $value = getChildren($file1Value);
         $difference = ["category" => "deleted", "key" => $key, "value" => $value];
     } elseif (!array_key_exists($key, $file1Content)) {
-        $value = getLines($file2Value);
+        $value = getChildren($file2Value);
         $difference = ["category" => "added", "key" => $key, "value" => $value];
     } elseif ($file1Value !== $file2Value) {
-        $value1 = getLines($file1Value) ?? null;
-        $value2 = getLines($file2Value) ?? null;
+        $value1 = getChildren($file1Value) ?? null;
+        $value2 = getChildren($file2Value) ?? null;
         $difference = ["category" => "changed",  "key" => $key, "value" => $value1, "value2" => $value2,];
     } else {
         $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
@@ -60,7 +59,7 @@ function findDifference($file1Content, $file2Content, $key)
     return $difference;
 }
 
-function getLines($fileContent)
+function getChildren($fileContent)
 {
     $iter = function ($fileContent) use (&$iter) {
         if (!is_array($fileContent)) {
