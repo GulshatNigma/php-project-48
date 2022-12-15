@@ -3,6 +3,7 @@
 namespace Differ\Differ;
 
 use Exception;
+
 use function Differ\Parser\parseFile;
 use function Differ\Formatter\Stylish\getFormat as getFormatStylish;
 use function Differ\Formatter\Plain\getFormat as getFormatPlain;
