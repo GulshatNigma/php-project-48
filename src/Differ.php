@@ -15,15 +15,6 @@ function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
     return getDesiredFormat($format, $differenceTree);
 }
 
-function builDifferenceTree($file1Content, $file2Content)
-{
-    $file1Keys = array_keys($file1Content);
-    $file2Keys = array_keys($file2Content);
-    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
-    sort($filesKeys, SORT_STRING);
-    return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $filesKeys);
-}
-
 function getDesiredFormat($format, $differenceTree)
 {
     switch ($format) {
@@ -36,6 +27,15 @@ function getDesiredFormat($format, $differenceTree)
         default:
             throw new Exception("Unknown format");
     }
+}
+
+function builDifferenceTree($file1Content, $file2Content)
+{
+    $file1Keys = array_keys($file1Content);
+    $file2Keys = array_keys($file2Content);
+    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
+    sort($filesKeys, SORT_STRING);
+    return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $filesKeys);
 }
 
 function findDifference($file1Content, $file2Content, $key)
