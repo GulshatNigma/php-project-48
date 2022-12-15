@@ -25,7 +25,7 @@ function getFormat($tree)
         return implode("\n", $line);
     };
     $result = $iter($tree);
-    return $result . "\n";
+    return $result;
 }
 
 function getResultByType($type, $key, $value, $node, $parentKey)
@@ -53,6 +53,9 @@ function normalizeValue($value, $type)
         $value = "[complex value]";
     }
     if ($value === "'false'" || $value === "'true'" || $value === "'null'") {
+        $value = toString($value);
+    }
+    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'", "'0'"])) {
         $value = toString($value);
     }
     return $value;
