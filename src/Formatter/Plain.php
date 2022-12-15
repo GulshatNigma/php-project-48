@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter\Plain;
 
-function getFormat($tree)
+function getFormat(array $tree)
 {
     $iter = function ($tree, $parentKey = "") use (&$iter) {
         $lines = array_map(function ($node) use ($iter, $parentKey) {
@@ -28,7 +28,7 @@ function getFormat($tree)
     return $result;
 }
 
-function getResultByType($type, $key, $value, $node, $parentKey)
+function getResultByType(string $type, string $key, $value, array $node, string $parentKey)
 {
     switch ($type) {
         case "changed":
@@ -44,7 +44,7 @@ function getResultByType($type, $key, $value, $node, $parentKey)
     }
 }
 
-function normalizeValue($value, $type)
+function normalizeValue($value, string $type)
 {
     if (gettype($value) === 'string') {
         $value = "'$value'";
@@ -55,33 +55,33 @@ function normalizeValue($value, $type)
     if ($value === "'false'" || $value === "'true'" || $value === "'null'") {
         $value = toString($value);
     }
-    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'", "'0'"])) {
+    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'"])) {
         $value = toString($value);
     }
     return $value;
 }
 
-function toString($value)
+function toString(string $value)
 {
     return trim($value, "'");
 }
 
-function getCategory($node)
+function getCategory(array $node)
 {
     return $node["category"];
 }
 
-function getKey($node)
+function getKey(array $node)
 {
     return $node["key"];
 }
 
-function getValue($node)
+function getValue(array $node)
 {
     return $node["value"];
 }
 
-function getValue2($node)
+function getValue2(array $node)
 {
     return $node["value2"];
 }

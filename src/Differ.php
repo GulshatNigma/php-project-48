@@ -7,7 +7,7 @@ use function Differ\Formatter\Stylish\getFormat as getFormatStylish;
 use function Differ\Formatter\Plain\getFormat as getFormatPlain;
 use function Differ\Formatter\Json\getFormat as getFormatJson;
 
-function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
+function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish")
 {
     $file1Content = parseFile(realpath($pathToFile1));
     $file2Content = parseFile(realpath($pathToFile2));
@@ -15,7 +15,7 @@ function genDiff($pathToFile1, $pathToFile2, $format = "stylish")
     return getDesiredFormat($format, $differenceTree);
 }
 
-function getDesiredFormat($format, $differenceTree)
+function getDesiredFormat(string $format, array $differenceTree)
 {
     switch ($format) {
         case "plain":
@@ -29,7 +29,7 @@ function getDesiredFormat($format, $differenceTree)
     }
 }
 
-function builDifferenceTree($file1Content, $file2Content)
+function builDifferenceTree(array $file1Content, array $file2Content)
 {
     $file1Keys = array_keys($file1Content);
     $file2Keys = array_keys($file2Content);
@@ -38,7 +38,7 @@ function builDifferenceTree($file1Content, $file2Content)
     return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $filesKeys);
 }
 
-function findDifference($file1Content, $file2Content, $key)
+function findDifference(array $file1Content, array $file2Content, string $key)
 {
     $file1Value = $file1Content[$key] ?? null;
     $file2Value = $file2Content[$key] ?? null;

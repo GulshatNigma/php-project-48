@@ -2,7 +2,7 @@
 
 namespace Differ\Formatter\Stylish;
 
-function getFormat($tree, $depth = 1)
+function getFormat(array $tree, $depth = 1)
 {
     $iter = function ($tree, $depth) use (&$iter) {
         $indentStart = str_repeat("  ", $depth);
@@ -23,7 +23,7 @@ function getFormat($tree, $depth = 1)
     return $line;
 }
 
-function getResultByType($type, $indentStart, $key, $value, $node, $iter, $depth)
+function getResultByType(string $type, string $indentStart, string $key, $value, $node, $iter, $depth)
 {
     $value = toString($value);
     switch ($type) {
@@ -52,22 +52,22 @@ function getResultByType($type, $indentStart, $key, $value, $node, $iter, $depth
         return $result;
 }
 
-function getCategory($node)
+function getCategory(array $node)
 {
     return $node["category"];
 }
 
-function getKey($node)
+function getKey(array $node)
 {
     return $node["key"];
 }
 
-function getValue($node)
+function getValue(array $node)
 {
     return $node["value"];
 }
 
-function getValue2($node)
+function getValue2(array $node)
 {
     return $node["value2"];
 }
