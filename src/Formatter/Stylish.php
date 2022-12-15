@@ -12,10 +12,7 @@ function getFormat(array $tree)
         $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
-            $value = getValue($node);
-            if (is_array($value)) {
-                $value = $iter($value, $depth + 2);
-            }
+            $value = is_array($node["value"]) ? $iter($node["value"], $depth + 2) : getValue($node);
             $value2 = getValue2($node);
             if (is_array($value2)) {
                 $value2 = $iter($value2, $depth + 2);
