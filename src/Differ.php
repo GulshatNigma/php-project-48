@@ -33,6 +33,8 @@ function getDesiredFormat($format, $differenceTree)
             return getFormatJson($differenceTree);
         case "stylish":
             return getFormatStylish($differenceTree);
+        default:
+            throw new Exception("Unknown format");
     }
 }
 
