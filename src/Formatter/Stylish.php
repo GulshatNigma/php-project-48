@@ -29,6 +29,9 @@ function getResultByType($type, $indentStart, $key, $value, $node, $iter, $depth
     switch ($type) {
         case "changed":
             $value2 = getValue2($node);
+            if (is_array($value2)) {
+                $value2 = $iter($value2, $depth + 2);
+            }
             $result = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
             break;
         case "parent node":
