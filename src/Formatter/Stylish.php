@@ -2,12 +2,14 @@
 
 namespace Differ\Formatter\Stylish;
 
-function getFormat(array $tree, $depth = 1)
+use Exception;
+
+function getFormat(array $tree)
 {
-    $iter = function ($tree, $depth) use (&$iter) {
+    $iter = function ($tree, $depth = 1) use (&$iter) {
         $indentStart = str_repeat("  ", $depth);
         $indentEnd = str_repeat("  ", $depth - 1);
-        $lines = array_map(function ($node) use ($indentStart, $depth, $indentEnd, $iter) {
+        $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
             $type = getCategory($node);
             $key = getKey($node);
             $value = getValue($node);
@@ -27,7 +29,7 @@ function getFormat(array $tree, $depth = 1)
     return $line;
 }
 
-function getResultByType(string $type, string $indentStart, string $key, $value, $value2)
+function getResultByType(string $type, string $indentStart, string $key, string $value, string $value2)
 {
     switch ($type) {
         case "changed":
@@ -46,7 +48,7 @@ function getResultByType(string $type, string $indentStart, string $key, $value,
             $result = "$indentStart  $key: $value";
             break;
         default:
-            break;
+            throw new Exception("Unknown type");
     }
         return $result;
 }
@@ -68,5 +70,5 @@ function getValue(array $node)
 
 function getValue2(array $node)
 {
-    return $node["value2"] ?? null;
+    return array_key_exists("value2", $node) ? $node["value2"] : "";
 }

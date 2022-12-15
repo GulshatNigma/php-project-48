@@ -55,7 +55,7 @@ function normalizeValue($value, string $type)
     if ($value === "'false'" || $value === "'true'" || $value === "'null'") {
         $value = toString($value);
     }
-    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'"])) {
+    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'"], false)) {
         $value = toString($value);
     }
     return $value;
