@@ -2,13 +2,16 @@
 
 namespace Differ\Formatter\Plain;
 
+use function Functional\select_keys;
+use function Functional\flatten;
+
 function getFormat(array $tree)
 {
     $iter = function ($tree, $parentKey = []) use (&$iter) {
         $lines = array_map(function ($node) use ($iter, $parentKey) {
             $type = getCategory($node);
             $key = getKey($node);
-            array_push($parentKey, $key);
+            $parentKey[] = $key;
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
