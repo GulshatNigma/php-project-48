@@ -21,8 +21,7 @@ function getFormat(array $tree)
             $resultLine = getResultByType($type, $value, $parentKey);
             return $resultLine;
         }, $tree);
-        $line = [...$lines];
-        $line = array_filter($line, fn($path) => $path !== null);
+        $line = array_filter([...$lines], fn($path) => $path !== null);
         return implode("\n", $line);
     };
     $result = $iter($tree);
