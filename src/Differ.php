@@ -50,46 +50,40 @@ function builDifferenceTree(array $file1Content, array $file2Content)
 
 function findDifference(array $file1Content, array $file2Content, string $key)
 {
-    $file1Value = $file1Content[$key] ?? null;
-    $file2Value = $file2Content[$key] ?? null;
-    if (is_array($file1Value) && is_array($file2Value)) {
-        $value = builDifferenceTree($file1Value, $file2Value);
-        $difference = ["category" => "parent node", "key" => $key, "value" => $value];
-    } elseif (!array_key_exists($key, $file2Content)) {
-        $value = getChildren($file1Value);
-        $difference = ["category" => "deleted", "key" => $key, "value" => $value];
-    } elseif (!array_key_exists($key, $file1Content)) {
-        $value = getChildren($file2Value);
-        $difference = ["category" => "added", "key" => $key, "value" => $value];
-    } elseif ($file1Value !== $file2Value) {
-        $value = getChildren($file1Value) ?? null;
-        $value2 = getChildren($file2Value) ?? null;
-        $difference = ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
-    } else {
-        $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
-    }
-    return $difference;
-}
-
-function getChildren($fileContent)
-{
-    $iter = function ($fileContent) use (&$iter) {
+    $getChildren = function ($fileContent) use (&$getChildren) {
         if (!is_array($fileContent)) {
             return toString($fileContent);
         }
         $fileKeys = array_keys($fileContent);
         return array_map(
-            function ($key) use ($fileContent, $iter) {
-                $value = $fileContent[$key];
-                if (is_array($value)) {
-                    $value = $iter($value);
-                }
+            function ($key) use ($fileContent, $getChildren) {
+                $value = is_array($fileContent[$key]) ? $getChildren($fileContent[$key]) : $fileContent[$key];
                 return ["category" => "unchanged", "key" => $key, "value" => $value];
             },
             $fileKeys
         );
     };
-    return $iter($fileContent);
+
+    $file1Value = $file1Content[$key] ?? null;
+    $file2Value = $file2Content[$key] ?? null;
+
+    if (is_array($file1Value) && is_array($file2Value)) {
+        $value = builDifferenceTree($file1Value, $file2Value);
+        $difference = ["category" => "parent node", "key" => $key, "value" => $value];
+    } elseif (!array_key_exists($key, $file2Content)) {
+        $value = $getChildren($file1Value);
+        $difference = ["category" => "deleted", "key" => $key, "value" => $value];
+    } elseif (!array_key_exists($key, $file1Content)) {
+        $value = $getChildren($file2Value);
+        $difference = ["category" => "added", "key" => $key, "value" => $value];
+    } elseif ($file1Value !== $file2Value) {
+        $value = $getChildren($file1Value) ?? null;
+        $value2 = $getChildren($file2Value) ?? null;
+        $difference = ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
+    } else {
+        $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
+    }
+    return $difference;
 }
 
 function toString($value)

@@ -15,14 +15,15 @@ function getFormat(array $tree)
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
+
             if ($type === "changed") {
                 $value2 = is_array($node["value2"])
                 ? normalizeArrayValue(getValue2($node), $type, $parentKey, $iter)
                 : normalizeValue(getValue2($node), $type);
                 return getResultByType($type, $value, $parentKey, $value2);
             }
-            $resultLine = getResultByType($type, $value, $parentKey);
-            return $resultLine;
+
+            return getResultByType($type, $value, $parentKey);
         }, $tree);
         $line = array_filter([...$lines], fn($path) => $path !== null);
         return implode("\n", $line);
@@ -39,6 +40,17 @@ function normalizeArrayValue(array $value, string $type, array $parentKey, calla
     return $iter($value, $parentKey);
 }
 
+function normalizeValue(string $value, string $type)
+{
+    if ($value === "false" || $value === "true" || $value === "null") {
+        return toString($value);
+    }
+    if (in_array($value, ["0", "1", "3", "4", "5", "6", "7", "8", "9"], true)) {
+        return toString($value);
+    }
+    return "'$value'";
+}
+
 function getResultByType(string $type, string $value, array $parentKey, string $value2 = "")
 {
     switch ($type) {
@@ -53,17 +65,6 @@ function getResultByType(string $type, string $value, array $parentKey, string $
         default:
             break;
     }
-}
-
-function normalizeValue(string $value, string $type)
-{
-    if ($value === "false" || $value === "true" || $value === "null") {
-        return toString($value);
-    }
-    if (in_array($value, ["0", "1", "3", "4", "5", "6", "7", "8", "9"], true)) {
-        return toString($value);
-    }
-    return "'$value'";
 }
 
 function toString(string $value)
