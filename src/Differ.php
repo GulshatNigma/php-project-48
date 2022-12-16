@@ -15,7 +15,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
     $absolutePathToFile1 = realpath($pathToFile1);
     $absolutePathToFile2 = realpath($pathToFile2);
     if (is_bool($absolutePathToFile1) || is_bool($absolutePathToFile2)) {
-        return Exception("Unknown format");
+        return new Exception("File does not exist");
     }
     $file1Content = parseFile($absolutePathToFile1);
     $file2Content = parseFile($absolutePathToFile2);
