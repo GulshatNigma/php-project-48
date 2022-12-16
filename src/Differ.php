@@ -12,11 +12,11 @@ use function Differ\Formatter\Json\getFormat as getFormatJson;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish")
 {
-    if (is_bool($pathToFile1) || is_bool($pathToFile2)) {
-        return [];
-    }
     $absolutePathToFile1 = realpath($pathToFile1);
     $absolutePathToFile2 = realpath($pathToFile2);
+    if (is_bool($absolutePathToFile1) || is_bool($absolutePathToFile2)) {
+        return Exception("Unknown format");
+    }
     $file1Content = parseFile($absolutePathToFile1);
     $file2Content = parseFile($absolutePathToFile2);
     $differenceTree = builDifferenceTree($file1Content, $file2Content);
