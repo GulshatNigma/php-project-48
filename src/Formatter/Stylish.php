@@ -35,18 +35,24 @@ function getResultByType(string $type, string $indentStart, string $key, string 
 {
     switch ($type) {
         case "changed":
-            return "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
+            $result = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
+            break;
         case "parent node":
-            return "$indentStart  $key: $value";
+            $result = "$indentStart  $key: $value";
+            break;
         case "deleted":
-            return "$indentStart- $key: $value";
+            $result = "$indentStart- $key: $value";
+            break;
         case "added":
-            return "$indentStart+ $key: $value";
+            $result = "$indentStart+ $key: $value";
+            break;
         case "unchanged":
-            return "$indentStart  $key: $value";
+            $result = "$indentStart  $key: $value";
+            break;
         default:
             throw new Exception("Unknown type");
     }
+    return $result;
 }
 
 function getCategory(array $node)
