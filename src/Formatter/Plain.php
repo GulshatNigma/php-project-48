@@ -8,7 +8,7 @@ function getFormat(array $tree)
         $lines = array_map(function ($node) use ($iter, $parentKey) {
             $type = getCategory($node);
             $key = getKey($node);
-            $parentKey[] = $key;
+            array_push($parentKey, $key);
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
