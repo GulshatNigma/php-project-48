@@ -31,7 +31,7 @@ function getFormat(array $tree)
 
 function normalizeArrayValue(array $value, string $type, array $parentKey, callable $iter)
 {
-    if (is_array($value) && $type !== "parent node") {
+    if ($type !== "parent node") {
         return "[complex value]";
     }
     return $iter($value, $parentKey);
@@ -39,16 +39,15 @@ function normalizeArrayValue(array $value, string $type, array $parentKey, calla
 
 function getResultByType(string $type, string $value, array $parentKey, string $value2 = "")
 {
-    $parentKey = implode(".", $parentKey);
     switch ($type) {
         case "parent node":
             return "$value";
         case "changed":
-            return "Property '$parentKey' was updated. From $value to $value2";
+            return "Property '" . implode(".", $parentKey) . "' was updated. From $value to $value2";
         case "deleted":
-            return "Property '$parentKey' was removed";
+            return "Property '" . implode(".", $parentKey) . "' was removed";
         case "added":
-            return "Property '$parentKey' was added with value: $value";
+            return "Property '" . implode(".", $parentKey) . "' was added with value: $value";
         default:
             break;
     }
@@ -56,19 +55,13 @@ function getResultByType(string $type, string $value, array $parentKey, string $
 
 function normalizeValue(string $value, string $type)
 {
-    if (gettype($value) === 'string') {
-        $value = "'$value'";
+    if ($value === "false" || $value === "true" || $value === "null") {
+        return toString($value);
     }
-    if (is_array($value) && $type !== "parent node") {
-        $value = "[complex value]";
+    if (in_array($value, ["0", "1", "3", "4", "5", "6", "7", "8", "9"], true)) {
+        return toString($value);
     }
-    if ($value === "'false'" || $value === "'true'" || $value === "'null'") {
-        $value = toString($value);
-    }
-    if (in_array($value, ["'0'", "'1'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'"], true)) {
-        $value = toString($value);
-    }
-    return $value;
+    return "'$value'";
 }
 
 function toString(string $value)
