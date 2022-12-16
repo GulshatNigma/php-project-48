@@ -77,8 +77,8 @@ function findDifference(array $file1Content, array $file2Content, string $key)
         $value = $getChildren($file2Value);
         $difference = ["category" => "added", "key" => $key, "value" => $value];
     } elseif ($file1Value !== $file2Value) {
-        $value = $getChildren($file1Value) ?? null;
-        $value2 = $getChildren($file2Value) ?? null;
+        $value = $getChildren($file1Value);
+        $value2 = $getChildren($file2Value);
         $difference = ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
     } else {
         $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
