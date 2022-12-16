@@ -9,6 +9,9 @@ function parseFile(string $absolutePathToFile)
 {
     $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
     $fileContent = file_get_contents($absolutePathToFile);
+    if (is_bool($fileContent)) {
+        return new Exception("File read error");
+    }
     switch ($expansion) {
         case "json":
             return json_decode($fileContent, $associative = true);

@@ -42,8 +42,8 @@ function builDifferenceTree(array $file1Content, array $file2Content)
     $file1Keys = array_keys($file1Content);
     $file2Keys = array_keys($file2Content);
     $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
-    $sortFilesKeys = sort($filesKeys, function ($left, $right) {
-        return strcmp($left, $right);
+    $sortFilesKeys = sort($filesKeys, function ($leftKey, $rightKey) {
+        return strcmp($leftKey, $rightKey);
     });
     return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $sortFilesKeys);
 }
