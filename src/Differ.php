@@ -14,6 +14,9 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 {
     $absolutePathToFile1 = realpath($pathToFile1);
     $absolutePathToFile2 = realpath($pathToFile2);
+    if (!file_exists($absolutePathToFile1) || !file_exists($absolutePathToFile2)) {
+        throw new Exception("Empty file");
+    }
     $file1Content = parseFile($absolutePathToFile1);
     $file2Content = parseFile($absolutePathToFile2);
     $differenceTree = builDifferenceTree($file1Content, $file2Content);

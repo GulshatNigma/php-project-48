@@ -7,9 +7,6 @@ use Symfony\Component\Yaml\Yaml;
 
 function parseFile(string $absolutePathToFile)
 {
-    if (filesize($absolutePathToFile) === 0) {
-        throw new Exception("Empty file");
-    }
     $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
     $fileContent = file_get_contents($absolutePathToFile);
     switch ($expansion) {

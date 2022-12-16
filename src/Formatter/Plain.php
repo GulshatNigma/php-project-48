@@ -4,20 +4,15 @@ namespace Differ\Formatter\Plain;
 
 function getFormat(array $tree)
 {
-    $iter = function ($tree, $parentKey = "") use (&$iter) {
+    $iter = function ($tree, $parentKey = []) use (&$iter) {
         $lines = array_map(function ($node) use ($iter, $parentKey) {
             $type = getCategory($node);
             $key = getKey($node);
-            $value = normalizeValue(getValue($node), $type);
-            if ($type === "parent node") {
-                if (is_array($value)) {
-                    $parentKey .= "$key.";
-                    $value = $iter($value, $parentKey);
-                }
-                $resultLine = "$value";
-            } else {
-                $resultLine = getResultByType($type, $key, $value, $node, $parentKey);
-            }
+            $parentKey[] = $key;
+            $value = is_array($node["value"])
+            ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
+            : normalizeValue(getValue($node), $type);
+            $resultLine = getResultByType($type, $key, $value, $node, $parentKey);
             return $resultLine;
         }, $tree);
         $line = [...$lines];
@@ -28,23 +23,34 @@ function getFormat(array $tree)
     return $result;
 }
 
-function getResultByType(string $type, string $key, $value, array $node, string $parentKey)
+function normalizeArrayValue(array $value, string $type, array $parentKey, callable $iter)
 {
+    if (is_array($value) && $type !== "parent node") {
+        return "[complex value]";
+    }
+    return $iter($value, $parentKey);
+}
+
+function getResultByType(string $type, string $key, $value, array $node, array $parentKey)
+{
+    $parentKey = implode(".", $parentKey);
     switch ($type) {
+        case "parent node":
+            return "$value";
         case "changed":
             $value2 = getValue2($node);
             $value2 = normalizeValue($value2, $type);
-            return "Property '$parentKey$key' was updated. From $value to $value2";
+            return "Property '$parentKey' was updated. From $value to $value2";
         case "deleted":
-            return "Property '$parentKey$key' was removed";
+            return "Property '$parentKey' was removed";
         case "added":
-            return "Property '$parentKey$key' was added with value: $value";
+            return "Property '$parentKey' was added with value: $value";
         default:
             break;
     }
 }
 
-function normalizeValue($value, string $type)
+function normalizeValue(string $value, string $type)
 {
     if (gettype($value) === 'string') {
         $value = "'$value'";
