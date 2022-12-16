@@ -7,11 +7,11 @@ use function Functional\flatten;
 
 function getFormat(array $tree)
 {
-    $iter = function ($tree, $parentKey = []) use (&$iter) {
-        $lines = array_map(function ($node) use ($iter, $parentKey) {
+    $iter = function ($tree, $lastKey = "") use (&$iter) {
+        $lines = array_map(function ($node) use ($iter, $lastKey) {
             $type = getCategory($node);
             $key = getKey($node);
-            $parentKey[] = $key;
+            $parentKey = "$lastKey$key";
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
@@ -32,12 +32,12 @@ function getFormat(array $tree)
     return $result;
 }
 
-function normalizeArrayValue(array $value, string $type, array $parentKey, callable $iter)
+function normalizeArrayValue(array $value, string $type, string $parentKey, callable $iter)
 {
     if ($type !== "parent node") {
         return "[complex value]";
     }
-    return $iter($value, $parentKey);
+    return $iter($value, "$parentKey.");
 }
 
 function normalizeValue(string $value, string $type)
@@ -51,17 +51,17 @@ function normalizeValue(string $value, string $type)
     return "'$value'";
 }
 
-function getResultByType(string $type, string $value, array $parentKey, string $value2 = "")
+function getResultByType(string $type, string $value, string $parentKey, string $value2 = "")
 {
     switch ($type) {
         case "parent node":
             return "$value";
         case "changed":
-            return "Property '" . implode(".", $parentKey) . "' was updated. From $value to $value2";
+            return "Property '" . $parentKey . "' was updated. From $value to $value2";
         case "deleted":
-            return "Property '" . implode(".", $parentKey) . "' was removed";
+            return "Property '" . $parentKey . "' was removed";
         case "added":
-            return "Property '" . implode(".", $parentKey) . "' was added with value: $value";
+            return "Property '" . $parentKey . "' was added with value: $value";
         default:
             break;
     }

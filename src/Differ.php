@@ -52,7 +52,7 @@ function findDifference(array $file1Content, array $file2Content, string $key)
 {
     $getChildren = function ($fileContent) use (&$getChildren) {
         if (!is_array($fileContent)) {
-            return toString($fileContent);
+            return $fileContent === null ? "null" : trim(var_export($fileContent, true), "'");
         }
         $fileKeys = array_keys($fileContent);
         return array_map(
@@ -84,9 +84,4 @@ function findDifference(array $file1Content, array $file2Content, string $key)
         $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
     }
     return $difference;
-}
-
-function toString($value)
-{
-    return $value === null ? "null" : trim(var_export($value, true), "'");
 }
