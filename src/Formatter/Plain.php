@@ -12,7 +12,7 @@ function getFormat(array $tree)
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
-            $resultLine = getResultByType($type, $key, $value, $node, $parentKey);
+            $resultLine = getResultByType($type, $key, $value, $node, $parentKey, $iter);
             return $resultLine;
         }, $tree);
         $line = [...$lines];
@@ -31,15 +31,16 @@ function normalizeArrayValue(array $value, string $type, array $parentKey, calla
     return $iter($value, $parentKey);
 }
 
-function getResultByType(string $type, string $key, $value, array $node, array $parentKey)
+function getResultByType(string $type, string $key, $value, array $node, array $parentKey, callable $iter)
 {
     $parentKey = implode(".", $parentKey);
     switch ($type) {
         case "parent node":
             return "$value";
         case "changed":
-            $value2 = getValue2($node);
-            $value2 = normalizeValue($value2, $type);
+            $value2 = is_array($node["value2"])
+            ? normalizeArrayValue(getValue2($node), $type, $parentKey, $iter)
+            : normalizeValue(getValue2($node), $type);
             return "Property '$parentKey' was updated. From $value to $value2";
         case "deleted":
             return "Property '$parentKey' was removed";
