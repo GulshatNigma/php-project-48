@@ -6,7 +6,7 @@ use Docopt;
 
 use function Differ\Differ\genDiff;
 
-function runCli()
+function run()
 {
     $doc = <<<'DOCOPT'
     gendiff -h
@@ -31,5 +31,5 @@ function runCli()
     $format = $args['--format'];
 
     $difference = genDiff($pathToFile1, $pathToFile2, $format);
-    echo($difference);
+    return $difference;
 }

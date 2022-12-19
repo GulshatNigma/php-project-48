@@ -14,7 +14,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 {
     $absolutePathToFile1 = realpath($pathToFile1);
     $absolutePathToFile2 = realpath($pathToFile2);
-    if (is_bool($absolutePathToFile1) || is_bool($absolutePathToFile2)) {
+    if ($absolutePathToFile1 === false || $absolutePathToFile2 === false) {
         return new Exception("File does not exist");
     }
     $file1Content = parseFile($absolutePathToFile1);

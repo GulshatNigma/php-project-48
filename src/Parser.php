@@ -9,7 +9,7 @@ function parseFile(string $absolutePathToFile)
 {
     $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
     $fileContent = file_get_contents($absolutePathToFile);
-    if (is_bool($fileContent)) {
+    if ($fileContent === false) {
         return new Exception("File read error");
     }
     switch ($expansion) {
