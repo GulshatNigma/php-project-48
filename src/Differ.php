@@ -6,7 +6,7 @@ use Exception;
 
 use function Functional\sort;
 use function Differ\Parser\parseFile;
-use function Differ\DesiredFormat\getDesiredFormat;
+use function Differ\Formatter\getDesiredFormat;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish")
 {
@@ -23,6 +23,9 @@ function getFileContent(string $pathToFile)
         return new Exception("File does not exist");
     }
     $fileContent = file_get_contents($absolutePathToFile);
+    if ($fileContent === false) {
+        return new Exception("File read error");
+    }
     $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
     return parseFile($expansion, $fileContent);
 }

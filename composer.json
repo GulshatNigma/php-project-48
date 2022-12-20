@@ -9,7 +9,7 @@
                   "src/Formatter/Stylish.php",
                   "src/Formatter/Plain.php",
                   "src/Formatter/Json.php",
-                  "src/Formatter/DesiredFormat.php"]
+                  "src/Formatter/Formatter.php"]
     },
     "authors": [
         {
