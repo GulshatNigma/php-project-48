@@ -5,54 +5,42 @@ namespace Differ\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Differ\Differ\genDiff;
+use function Differ\Differ\getDesiredFormat;
 
 class GenDiffTest extends TestCase
 {
-    public function getFixtureFullPath($fixtureName)
+    public function getFullPath($fixtureName)
     {
         $parts = [__DIR__, 'fixtures', $fixtureName];
         return realpath(implode('/', $parts));
     }
 
-    public function testJsonStylish()
+    public function additionProvider()
     {
-        $file1 = $this->getFixtureFullPath('file1.json');
-        $file2 = $this->getFixtureFullPath('file2.json');
-        $result = file_get_contents($this->getFixtureFullPath('resultJsonFilesStylish.json'));
+        return [
+            [$this->getFullPath('resultStylish.json'),
+            $this->getFullPath('file1.json'), $this->getFullPath('file2.json')],
 
-        $diff = genDiff($file1, $file2);
-        return $this->assertEquals($result, $diff);
+            [$this->getFullPath('resultStylish.json'),
+            $this->getFullPath('file1.yaml'), $this->getFullPath('file2.yaml')],
+
+            [$this->getFullPath('resultPlain.json'),
+            $this->getFullPath('file1.json'), $this->getFullPath('file2.json'), "plain"],
+
+            [$this->getFullPath('resultPlain.json'),
+            $this->getFullPath('file1.yaml'), $this->getFullPath('file2.yaml'), "plain"],
+
+            [$this->getFullPath('resultJson.json'),
+            $this->getFullPath('file1.json'), $this->getFullPath('file2.json'), "json"]
+        ];
     }
 
-    public function testYamlStylish()
+    /**
+     * @dataProvider additionProvider
+     */
+    public function testStylish($expected, $file1, $file2, $format = "stylish")
     {
-        $file1 = $this->getFixtureFullPath('file1.yaml');
-        $file2 = $this->getFixtureFullPath('file2.yaml');
-        $result = file_get_contents($this->getFixtureFullPath('resultYamlFilesStylish.yaml'));
-
-        $diff = genDiff($file1, $file2);
-        return $this->assertEquals($result, $diff);
-    }
-
-    public function testJsonPlain()
-    {
-        $file1 = $this->getFixtureFullPath('file1.json');
-        $file2 = $this->getFixtureFullPath('file2.json');
-        $result = file_get_contents($this->getFixtureFullPath('resultJsonFilesPlain.json'));
-
-        $format = "plain";
         $diff = genDiff($file1, $file2, $format);
-        return $this->assertEquals($result, $diff);
-    }
-
-    public function testJsonJson()
-    {
-        $file1 = $this->getFixtureFullPath('file1.json');
-        $file2 = $this->getFixtureFullPath('file2.json');
-        $result = file_get_contents($this->getFixtureFullPath('resultJsonFilesJson.json'));
-
-        $format = "json";
-        $diff = genDiff($file1, $file2, $format);
-        return $this->assertEquals($result, $diff);
+        $this->assertStringEqualsFile($expected, $diff);
     }
 }

@@ -8,7 +8,8 @@
                   "src/Parser.php",
                   "src/Formatter/Stylish.php",
                   "src/Formatter/Plain.php",
-                  "src/Formatter/Json.php"]
+                  "src/Formatter/Json.php",
+                  "src/Formatter/DesiredFormat.php"]
     },
     "authors": [
         {

@@ -6,35 +6,25 @@ use Exception;
 
 use function Functional\sort;
 use function Differ\Parser\parseFile;
-use function Differ\Formatter\Stylish\getFormat as getFormatStylish;
-use function Differ\Formatter\Plain\getFormat as getFormatPlain;
-use function Differ\Formatter\Json\getFormat as getFormatJson;
+use function Differ\DesiredFormat\getDesiredFormat;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish")
 {
-    $absolutePathToFile1 = realpath($pathToFile1);
-    $absolutePathToFile2 = realpath($pathToFile2);
-    if ($absolutePathToFile1 === false || $absolutePathToFile2 === false) {
-        return new Exception("File does not exist");
-    }
-    $file1Content = parseFile($absolutePathToFile1);
-    $file2Content = parseFile($absolutePathToFile2);
+    $file1Content = getFileContent($pathToFile1);
+    $file2Content = getFileContent($pathToFile2);
     $differenceTree = builDifferenceTree($file1Content, $file2Content);
     return getDesiredFormat($format, $differenceTree);
 }
 
-function getDesiredFormat(string $format, array $differenceTree)
+function getFileContent(string $pathToFile)
 {
-    switch ($format) {
-        case "plain":
-            return getFormatPlain($differenceTree);
-        case "json":
-            return getFormatJson($differenceTree);
-        case "stylish":
-            return getFormatStylish($differenceTree);
-        default:
-            throw new Exception("Unknown format");
+    $absolutePathToFile = realpath($pathToFile);
+    if ($absolutePathToFile === false) {
+        return new Exception("File does not exist");
     }
+    $fileContent = file_get_contents($absolutePathToFile);
+    $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
+    return parseFile($expansion, $fileContent);
 }
 
 function builDifferenceTree(array $file1Content, array $file2Content)
