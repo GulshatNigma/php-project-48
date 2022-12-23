@@ -37,7 +37,7 @@ function getResultByType(string $type, string $indentStart, string $key, string 
         case "changed":
             $result = "$indentStart- $key: $value" . "\n" . "$indentStart+ $key: $value2";
             break;
-        case "parent node":
+        case "has children":
             $result = "$indentStart  $key: $value";
             break;
         case "deleted":

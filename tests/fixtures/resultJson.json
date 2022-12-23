@@ -1,6 +1,6 @@
 [
     {
-        "category": "parent node",
+        "category": "has children",
         "key": "common",
         "value": [
             {
@@ -41,11 +41,11 @@
                 ]
             },
             {
-                "category": "parent node",
+                "category": "has children",
                 "key": "setting6",
                 "value": [
                     {
-                        "category": "parent node",
+                        "category": "has children",
                         "key": "doge",
                         "value": [
                             {
@@ -71,7 +71,7 @@
         ]
     },
     {
-        "category": "parent node",
+        "category": "has children",
         "key": "group1",
         "value": [
             {

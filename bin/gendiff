@@ -12,5 +12,4 @@ if (file_exists($autoloadPath1)) {
 
 use function Differ\Cli\run;
 
-$difference = run();
-echo($difference);
+echo(run());

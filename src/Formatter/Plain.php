@@ -34,7 +34,7 @@ function getFormat(array $tree)
 
 function normalizeArrayValue(array $value, string $type, string $parentKey, callable $iter)
 {
-    if ($type !== "parent node") {
+    if ($type !== "has children") {
         return "[complex value]";
     }
     return $iter($value, "$parentKey.");
@@ -54,7 +54,7 @@ function normalizeValue(string $value, string $type)
 function getResultByType(string $type, string $value, string $parentKey, string $value2 = "")
 {
     switch ($type) {
-        case "parent node":
+        case "has children":
             return "$value";
         case "changed":
             return "Property '" . $parentKey . "' was updated. From $value to $value2";

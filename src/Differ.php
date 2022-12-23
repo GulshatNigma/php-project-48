@@ -10,34 +10,45 @@ use function Differ\Formatter\getDesiredFormat;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish")
 {
-    $file1Content = getFileContent($pathToFile1);
-    $file2Content = getFileContent($pathToFile2);
-    $differenceTree = builDifferenceTree($file1Content, $file2Content);
+    $file1Content = makeParseFile($pathToFile1);
+    $file2Content = makeParseFile($pathToFile2);
+
+    $differenceTree = buildDifferenceTree($file1Content, $file2Content);
     return getDesiredFormat($format, $differenceTree);
+}
+
+function getExpansion(string $pathToFile)
+{
+    return $expansion = pathinfo(getAbsolutePathToFile($pathToFile), PATHINFO_EXTENSION);
+}
+
+function getAbsolutePathToFile(string $pathToFile)
+{
+    return realpath($pathToFile) === false ? new Exception("File does not exist") : realpath($pathToFile);
 }
 
 function getFileContent(string $pathToFile)
 {
-    $absolutePathToFile = realpath($pathToFile);
-    if ($absolutePathToFile === false) {
-        return new Exception("File does not exist");
-    }
-    $fileContent = file_get_contents($absolutePathToFile);
-    if ($fileContent === false) {
-        return new Exception("File read error");
-    }
-    $expansion = pathinfo($absolutePathToFile, PATHINFO_EXTENSION);
-    return parseFile($expansion, $fileContent);
+    return file_get_contents(getAbsolutePathToFile($pathToFile)) === false
+            ? new Exception("File read error")
+            : file_get_contents(getAbsolutePathToFile($pathToFile));
 }
 
-function builDifferenceTree(array $file1Content, array $file2Content)
+function makeParseFile(string $pathToFile)
+{
+    return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
+}
+
+function buildDifferenceTree(array $file1Content, array $file2Content)
 {
     $file1Keys = array_keys($file1Content);
     $file2Keys = array_keys($file2Content);
     $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
+
     $sortFilesKeys = sort($filesKeys, function ($leftKey, $rightKey) {
         return strcmp($leftKey, $rightKey);
     });
+
     return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $sortFilesKeys);
 }
 
@@ -61,8 +72,8 @@ function findDifference(array $file1Content, array $file2Content, string $key)
     $file2Value = $file2Content[$key] ?? null;
 
     if (is_array($file1Value) && is_array($file2Value)) {
-        $value = builDifferenceTree($file1Value, $file2Value);
-        $difference = ["category" => "parent node", "key" => $key, "value" => $value];
+        $value = buildDifferenceTree($file1Value, $file2Value);
+        $difference = ["category" => "has children", "key" => $key, "value" => $value];
     } elseif (!array_key_exists($key, $file2Content)) {
         $value = $getChildren($file1Value);
         $difference = ["category" => "deleted", "key" => $key, "value" => $value];

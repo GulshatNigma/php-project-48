@@ -11,7 +11,6 @@ function parseFile(string $expansion, string $fileContent)
         case "json":
             return json_decode($fileContent, $associative = true);
         case "yaml":
-            return Yaml::parse($fileContent);
         case "yml":
             return Yaml::parse($fileContent);
         default:

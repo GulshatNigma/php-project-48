@@ -18,20 +18,11 @@ class GenDiffTest extends TestCase
     public function additionProvider()
     {
         return [
-            [$this->getFullPath('resultStylish.json'),
-            $this->getFullPath('file1.json'), $this->getFullPath('file2.json')],
-
-            [$this->getFullPath('resultStylish.json'),
-            $this->getFullPath('file1.yaml'), $this->getFullPath('file2.yaml')],
-
-            [$this->getFullPath('resultPlain.json'),
-            $this->getFullPath('file1.json'), $this->getFullPath('file2.json'), "plain"],
-
-            [$this->getFullPath('resultPlain.json'),
-            $this->getFullPath('file1.yaml'), $this->getFullPath('file2.yaml'), "plain"],
-
-            [$this->getFullPath('resultJson.json'),
-            $this->getFullPath('file1.json'), $this->getFullPath('file2.json'), "json"]
+            ['resultStylish.json', 'file1.json', 'file2.json'],
+            ['resultStylish.json', 'file1.yaml', 'file2.yaml'],
+            ['resultPlain.json', 'file1.json', 'file2.json', "plain"],
+            ['resultPlain.json', 'file1.yaml', 'file2.yaml', "plain"],
+            ['resultJson.json', 'file1.json', 'file2.json', "json"]
         ];
     }
 
@@ -40,7 +31,7 @@ class GenDiffTest extends TestCase
      */
     public function testStylish($expected, $file1, $file2, $format = "stylish")
     {
-        $diff = genDiff($file1, $file2, $format);
-        $this->assertStringEqualsFile($expected, $diff);
+        $diff = genDiff($this->getFullPath($file1), $this->getFullPath($file2), $format);
+        $this->assertStringEqualsFile($this->getFullPath($expected), $diff);
     }
 }
