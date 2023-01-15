@@ -89,7 +89,7 @@ function findDifference(array $file1Content, array $file2Content, string $key): 
     return $difference;
 }
 
-function getChildren($fileContent)
+function getChildren(mixed $fileContent)
 {
     $getChildren = function ($fileContent) use (&$getChildren) {
         if (!is_array($fileContent)) {
@@ -109,7 +109,7 @@ function getChildren($fileContent)
     return $getChildren($fileContent);
 }
 
-function getStringContent($fileContent)
+function getStringContent(mixed $fileContent)
 {
     return $fileContent === null ? "null" : trim(var_export($fileContent, true), "'");
 }
