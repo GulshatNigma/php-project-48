@@ -19,7 +19,6 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 
 
 
-
 function makeParseFile(string $pathToFile): array
 {
     return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
@@ -45,13 +44,9 @@ function getFileContent(string $pathToFile): string
 
 
 
-
 function buildDifferenceTree(array $file1Content, array $file2Content): array
 {
-    $file1Keys = array_keys($file1Content);
-    $file2Keys = array_keys($file2Content);
-    $filesKeys = array_unique(array_merge($file1Keys, $file2Keys));
-
+    $filesKeys = array_unique(array_merge(array_keys($file1Content), array_keys($file2Content)));
     $sortFilesKeys = sort($filesKeys, function ($leftKey, $rightKey) {
         return strcmp($leftKey, $rightKey);
     });
@@ -87,7 +82,7 @@ function findDifference(array $file1Content, array $file2Content, string $key): 
     return $difference;
 }
 
-function getChildren(mixed $fileContent)
+function getChildren(mixed $fileContent): mixed
 {
     $getChildren = function ($fileContent) use (&$getChildren) {
         if (!is_array($fileContent)) {
@@ -107,7 +102,7 @@ function getChildren(mixed $fileContent)
     return $getChildren($fileContent);
 }
 
-function getStringContent(mixed $fileContent)
+function getStringContent(mixed $fileContent): string
 {
     return $fileContent === null ? "null" : trim(var_export($fileContent, true), "'");
 }

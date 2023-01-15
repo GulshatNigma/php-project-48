@@ -14,6 +14,7 @@ function getFormat(array $tree)
             $type = getCategory($node);
             $key = getKey($node);
             $value = is_array($node["value"]) ? $iter($node["value"], $depth + 2) : getValue($node);
+
             if ($type === "changed") {
                 $value2 = is_array($node["value2"])
                 ? $iter($node["value2"], $depth + 2)
@@ -24,9 +25,11 @@ function getFormat(array $tree)
 
             return getResultByType($type, $indentStart, $key, $value);
         }, $tree);
+
         $result = ["{", ...$lines, "{$indentEnd}}"];
         return implode("\n", $result);
     };
+
     $line = $iter($tree, 1);
     return $line;
 }
