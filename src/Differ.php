@@ -20,6 +20,11 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 
 
 
+function makeParseFile(string $pathToFile): array
+{
+    return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
+}
+
 function getExpansion(string $pathToFile): string
 {
     return $expansion = pathinfo(getAbsolutePathToFile($pathToFile), PATHINFO_EXTENSION);
@@ -35,11 +40,6 @@ function getFileContent(string $pathToFile): string
     return file_get_contents(getAbsolutePathToFile($pathToFile)) === false
             ? new Exception("File read error")
             : file_get_contents(getAbsolutePathToFile($pathToFile));
-}
-
-function makeParseFile(string $pathToFile): array
-{
-    return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
 }
 
 
@@ -69,19 +69,17 @@ function findDifference(array $file1Content, array $file2Content, string $key): 
 
     if (is_array($file1Value) && is_array($file2Value)) {
         $value = buildDifferenceTree($file1Value, $file2Value);
-        $difference = ["category" => "has children", "key" => $key, "value" => $value];
-    } elseif (!array_key_exists($key, $file2Content)) {
-        $value = getChildren($file1Value);
+        return ["category" => "has children", "key" => $key, "value" => $value];
+    }
+    
+    $value = getChildren($file1Value);
+    $value2 = getChildren($file2Value);
 
+    if (!array_key_exists($key, $file2Content)) {
         $difference = ["category" => "deleted", "key" => $key, "value" => $value];
     } elseif (!array_key_exists($key, $file1Content)) {
-        $value = getChildren($file2Value);
-
-        $difference = ["category" => "added", "key" => $key, "value" => $value];
+        $difference = ["category" => "added", "key" => $key, "value" => $value2];
     } elseif ($file1Value !== $file2Value) {
-        $value = getChildren($file1Value);
-        $value2 = getChildren($file2Value);
-
         $difference = ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
     } else {
         $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
