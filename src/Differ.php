@@ -71,7 +71,7 @@ function findDifference(array $file1Content, array $file2Content, string $key): 
         $value = buildDifferenceTree($file1Value, $file2Value);
         return ["category" => "has children", "key" => $key, "value" => $value];
     }
-    
+
     $value = getChildren($file1Value);
     $value2 = getChildren($file2Value);
 
