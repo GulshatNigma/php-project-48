@@ -28,6 +28,7 @@ class ExceptionTest extends TestCase
     public function testUnknownFormat($file1, $file2, $format = "stylish")
     {
         $this->expectException('Error');
-        $this->gendiff($this->getFullPath($file1), $this->getFullPath($file2), $format);
+        var_dump($this->gendiff($this->getFullPath($file1), $this->getFullPath($file2), $format));
+        $diff = $this->gendiff($this->getFullPath($file1), $this->getFullPath($file2), $format);
     }
 }
