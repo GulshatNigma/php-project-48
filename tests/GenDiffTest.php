@@ -5,7 +5,6 @@ namespace Differ\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Differ\Differ\genDiff;
-use function Differ\Differ\getDesiredFormat;
 
 class GenDiffTest extends TestCase
 {
@@ -29,7 +28,7 @@ class GenDiffTest extends TestCase
     /**
      * @dataProvider additionProvider
      */
-    public function testStylish($expected, $file1, $file2, $format = "stylish")
+    public function test($expected, $file1, $file2, $format = "stylish")
     {
         $diff = genDiff($this->getFullPath($file1), $this->getFullPath($file2), $format);
         $this->assertStringEqualsFile($this->getFullPath($expected), $diff);

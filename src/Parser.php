@@ -5,7 +5,7 @@ namespace Differ\Parser;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
 
-function parseFile(string $expansion, string $fileContent)
+function parseFile(string $expansion, string $fileContent): array
 {
     switch ($expansion) {
         case "json":
