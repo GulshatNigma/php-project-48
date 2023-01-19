@@ -12,6 +12,7 @@ function getFormat(array $tree)
             $type = getCategory($node);
             $key = getKey($node);
             $parentKey = "$lastKey$key";
+
             $value = is_array($node["value"])
             ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
             : normalizeValue(getValue($node), $type);
@@ -20,14 +21,17 @@ function getFormat(array $tree)
                 $value2 = is_array($node["value2"])
                 ? normalizeArrayValue(getValue2($node), $type, $parentKey, $iter)
                 : normalizeValue(getValue2($node), $type);
+
                 return getResultByType($type, $value, $parentKey, $value2);
             }
 
             return getResultByType($type, $value, $parentKey);
         }, $tree);
+
         $line = array_filter([...$lines], fn($path) => $path !== null);
         return implode("\n", $line);
     };
+
     $result = $iter($tree);
     return $result;
 }
