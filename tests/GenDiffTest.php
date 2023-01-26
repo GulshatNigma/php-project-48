@@ -17,22 +17,51 @@ class GenDiffTest extends TestCase
     public function additionProvider()
     {
         return [
-            ['resultStylish.json', 'file1.json', 'file2.json'],
-            ['resultStylish.json', 'file1.yaml', 'file2.yaml'],
-            ['resultStylish.json', 'file1.yml', 'file2.yml'],
-            ['resultPlain.json', 'file1.json', 'file2.json', "plain"],
-            ['resultPlain.json', 'file1.yaml', 'file2.yaml', "plain"],
-            ['resultPlain.json', 'file1.yml', 'file2.yml', "plain"],
-            ['resultJson.json', 'file1.json', 'file2.json', "json"]
+            ['json'],
+            ['yaml'],
+            ['yml']
         ];
     }
 
     /**
      * @dataProvider additionProvider
      */
-    public function test($expected, $file1, $file2, $format = "stylish")
+    public function testDefaultFormat($formatInput)
     {
-        $diff = genDiff($this->getFullPath($file1), $this->getFullPath($file2), $format);
-        $this->assertStringEqualsFile($this->getFullPath($expected), $diff);
+        $diff = genDiff($this->getFullPath("file1.$formatInput"), $this->getFullPath("file2.$formatInput"));
+        $this->assertStringEqualsFile($this->getFullPath('resultStylish.json'), $diff);
+    }
+
+    /**
+     * @dataProvider additionProvider
+     */
+    public function testStylishFormat($formatInput)
+    {
+        $format = "stylish";
+        $diff = genDiff($this->getFullPath("file1.$formatInput"), $this->getFullPath("file2.$formatInput"), $format);
+
+        $this->assertStringEqualsFile($this->getFullPath('resultStylish.json'), $diff);
+    }
+
+    /**
+     * @dataProvider additionProvider
+     */
+    public function testPlainFormat($formatInput)
+    {
+        $format = "plain";
+        $diff = genDiff($this->getFullPath("file1.$formatInput"), $this->getFullPath("file2.$formatInput"), $format);
+
+        $this->assertStringEqualsFile($this->getFullPath('resultPlain.json'), $diff);
+    }
+
+    /**
+     * @dataProvider additionProvider
+     */
+    public function testJsonFormat($formatInput)
+    {
+        $format = "json";
+        $diff = genDiff($this->getFullPath("file1.$formatInput"), $this->getFullPath("file2.$formatInput"), $format);
+
+        $this->assertStringEqualsFile($this->getFullPath('resultJson.json'), $diff);
     }
 }

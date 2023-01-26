@@ -8,7 +8,8 @@
         convertWarningsToExceptions="true" 
         processIsolation="false" stopOnFailure="true" 
         bootstrap="vendor/autoload.php" 
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+        cacheResult = "false">
     <coverage includeUncoveredFiles="true">
         <include>
             <directory suffix=".php">./src</directory>

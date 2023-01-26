@@ -17,8 +17,6 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
     return getDesiredFormat($format, $differenceTree);
 }
 
-
-
 function makeParseFile(string $pathToFile): array
 {
     return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
@@ -41,9 +39,6 @@ function getFileContent(string $pathToFile): string
             : file_get_contents(getAbsolutePathToFile($pathToFile));
 }
 
-
-
-
 function buildDifferenceTree(array $file1Content, array $file2Content): array
 {
     $filesKeys = array_unique(array_merge(array_keys($file1Content), array_keys($file2Content)));
@@ -53,9 +48,6 @@ function buildDifferenceTree(array $file1Content, array $file2Content): array
 
     return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $sortFilesKeys);
 }
-
-
-
 
 function findDifference(array $file1Content, array $file2Content, string $key): array
 {
