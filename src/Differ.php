@@ -36,7 +36,7 @@ function getFileContent(string $pathToFile): string
 {
     $content = file_get_contents(getAbsolutePathToFile($pathToFile));
 
-    if (!$content) {
+    if ($content === false) {
         throw new Exception("File read error");
     }
     return $content;
@@ -54,16 +54,16 @@ function buildDifferenceTree(array $content1, array $content2): array
 
 function findDifference(array $content1, array $content2, string $key): array
 {
-    $value1 = $content1[$key] ?? null;
-    $value2 = $content2[$key] ?? null;
+    $contentValue1 = $content1[$key] ?? null;
+    $contentValue2 = $content2[$key] ?? null;
 
-    if (is_array($value1) && is_array($value2)) {
-        $value = buildDifferenceTree($value1, $value2);
+    if (is_array($contentValue1) && is_array($contentValue2)) {
+        $value = buildDifferenceTree($contentValue1, $contentValue2);
         return ["category" => "has children", "key" => $key, "value" => $value];
     }
 
-    $value = getChildren($value1);
-    $value2 = getChildren($value2);
+    $value = getChildren($contentValue1);
+    $value2 = getChildren($contentValue2);
 
     if (!array_key_exists($key, $content2)) {
         return ["category" => "deleted", "key" => $key, "value" => $value];
@@ -73,11 +73,11 @@ function findDifference(array $content1, array $content2, string $key): array
         return ["category" => "added", "key" => $key, "value" => $value2];
     }
 
-    if ($value1 !== $value2) {
-        return ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
+    if ($contentValue1 !== $value2) {
+        return ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2];
     }
 
-    return ["category" => "unchanged", "key" => $key, "value" => $value1];
+    return ["category" => "unchanged", "key" => $key, "value" => $contentValue1];
 }
 
 function getChildren(mixed $content): mixed

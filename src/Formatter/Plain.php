@@ -32,7 +32,7 @@ function getFormat(array $tree)
     return $result;
 }
 
-function normalizeValue(mixed $value, string $type, string $parentKey, $iter)
+function normalizeValue(mixed $value, string $type, string $parentKey, callable $iter)
 {
     if (is_array($value)) {
         return $type === "has children" ? $iter($value, "$parentKey.") : "[complex value]";

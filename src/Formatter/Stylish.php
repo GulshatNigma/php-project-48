@@ -49,7 +49,7 @@ function getResultByType(string $type, string $indentStart, string $key, mixed $
     }
 }
 
-function normalizeValue(mixed $value, string $type, string $depth, $iter)
+function normalizeValue(mixed $value, string $type, int $depth, callable $iter)
 {
     if (is_array($value)) {
         return $iter($value, $depth + 2);
