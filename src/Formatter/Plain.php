@@ -38,7 +38,7 @@ function normalizeValue(mixed $value, string $type, string $parentKey, $iter)
         return $type === "has children" ? $iter($value, "$parentKey.") : "[complex value]";
     }
 
-    if (gettype($value) === "boolean") {
+    if (gettype($value) === "boolean" || gettype($value) === "integer") {
         return var_export($value, true);
     }
 
