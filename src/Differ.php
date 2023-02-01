@@ -5,26 +5,26 @@ namespace Differ\Differ;
 use Exception;
 
 use function Functional\sort;
-use function Differ\Parser\parseFile;
+use function Differ\Parser\parse;
 use function Differ\Formatter\getDesiredFormat;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish"): string
 {
-    $file1Content = makeParseFile($pathToFile1);
-    $file2Content = makeParseFile($pathToFile2);
+    $content1 = makeParseFile($pathToFile1);
+    $content2 = makeParseFile($pathToFile2);
 
-    $differenceTree = buildDifferenceTree($file1Content, $file2Content);
+    $differenceTree = buildDifferenceTree($content1, $content2);
     return getDesiredFormat($format, $differenceTree);
 }
 
 function makeParseFile(string $pathToFile): array
 {
-    return parseFile(getExpansion($pathToFile), getFileContent($pathToFile));
+    return parse(getExtension($pathToFile), getFileContent($pathToFile));
 }
 
-function getExpansion(string $pathToFile): string
+function getExtension(string $pathToFile): string
 {
-    return $expansion = pathinfo(getAbsolutePathToFile($pathToFile), PATHINFO_EXTENSION);
+    return pathinfo(getAbsolutePathToFile($pathToFile), PATHINFO_EXTENSION);
 }
 
 function getAbsolutePathToFile(string $pathToFile): string
@@ -34,67 +34,68 @@ function getAbsolutePathToFile(string $pathToFile): string
 
 function getFileContent(string $pathToFile): string
 {
-    return file_get_contents(getAbsolutePathToFile($pathToFile)) === false
-            ? new Exception("File read error")
-            : file_get_contents(getAbsolutePathToFile($pathToFile));
+    $content = file_get_contents(getAbsolutePathToFile($pathToFile));
+
+    if (!$content) {
+        throw new Exception("File read error");
+    }
+    return $content;
 }
 
-function buildDifferenceTree(array $file1Content, array $file2Content): array
+function buildDifferenceTree(array $content1, array $content2): array
 {
-    $filesKeys = array_unique(array_merge(array_keys($file1Content), array_keys($file2Content)));
-    $sortFilesKeys = sort($filesKeys, function ($leftKey, $rightKey) {
+    $keys = array_unique(array_merge(array_keys($content1), array_keys($content2)));
+    $sortedKeys = sort($keys, function ($leftKey, $rightKey) {
         return strcmp($leftKey, $rightKey);
     });
 
-    return array_map(fn($key) => findDifference($file1Content, $file2Content, $key), $sortFilesKeys);
+    return array_map(fn($key) => findDifference($content1, $content2, $key), $sortedKeys);
 }
 
-function findDifference(array $file1Content, array $file2Content, string $key): array
+function findDifference(array $content1, array $content2, string $key): array
 {
-    $file1Value = $file1Content[$key] ?? null;
-    $file2Value = $file2Content[$key] ?? null;
+    $value1 = $content1[$key] ?? null;
+    $value2 = $content2[$key] ?? null;
 
-    if (is_array($file1Value) && is_array($file2Value)) {
-        $value = buildDifferenceTree($file1Value, $file2Value);
+    if (is_array($value1) && is_array($value2)) {
+        $value = buildDifferenceTree($value1, $value2);
         return ["category" => "has children", "key" => $key, "value" => $value];
     }
 
-    $value = getChildren($file1Value);
-    $value2 = getChildren($file2Value);
+    $value = getChildren($value1);
+    $value2 = getChildren($value2);
 
-    if (!array_key_exists($key, $file2Content)) {
-        $difference = ["category" => "deleted", "key" => $key, "value" => $value];
-    } elseif (!array_key_exists($key, $file1Content)) {
-        $difference = ["category" => "added", "key" => $key, "value" => $value2];
-    } elseif ($file1Value !== $file2Value) {
-        $difference = ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
-    } else {
-        $difference = ["category" => "unchanged", "key" => $key, "value" => $file1Value];
+    if (!array_key_exists($key, $content2)) {
+        return ["category" => "deleted", "key" => $key, "value" => $value];
     }
-    return $difference;
+
+    if (!array_key_exists($key, $content1)) {
+        return ["category" => "added", "key" => $key, "value" => $value2];
+    }
+
+    if ($value1 !== $value2) {
+        return ["category" => "changed",  "key" => $key, "value" => $value, "value2" => $value2,];
+    }
+
+    return ["category" => "unchanged", "key" => $key, "value" => $value1];
 }
 
-function getChildren(mixed $fileContent): mixed
+function getChildren(mixed $content): mixed
 {
-    $getChildren = function ($fileContent) use (&$getChildren) {
-        if (!is_array($fileContent)) {
-            return getStringContent($fileContent);
+    $getChildren = function ($content) use (&$getChildren) {
+        if (!is_array($content)) {
+            return $content;
         }
 
-        $fileKeys = array_keys($fileContent);
+        $keys = array_keys($content);
         return array_map(
-            function ($key) use ($fileContent, $getChildren) {
-                $value = is_array($fileContent[$key]) ? $getChildren($fileContent[$key]) : $fileContent[$key];
+            function ($key) use ($content, $getChildren) {
+                $value = is_array($content[$key]) ? $getChildren($content[$key]) : $content[$key];
                 return ["category" => "unchanged", "key" => $key, "value" => $value];
             },
-            $fileKeys
+            $keys
         );
     };
 
-    return $getChildren($fileContent);
-}
-
-function getStringContent(mixed $fileContent): string
-{
-    return $fileContent === null ? "null" : trim(var_export($fileContent, true), "'");
+    return $getChildren($content);
 }

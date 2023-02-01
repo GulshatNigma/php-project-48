@@ -6,7 +6,7 @@
             {
                 "category": "added",
                 "key": "follow",
-                "value": "false"
+                "value": false
             },
             {
                 "category": "unchanged",
@@ -16,13 +16,13 @@
             {
                 "category": "deleted",
                 "key": "setting2",
-                "value": "200"
+                "value": 200
             },
             {
                 "category": "changed",
                 "key": "setting3",
-                "value": "true",
-                "value2": "null"
+                "value": true,
+                "value2": null
             },
             {
                 "category": "added",

@@ -9,18 +9,14 @@ function getFormat(array $tree)
 {
     $iter = function ($tree, $lastKey = "") use (&$iter) {
         $lines = array_map(function ($node) use ($iter, $lastKey) {
-            $type = getCategory($node);
-            $key = getKey($node);
+            $type = $node["category"];
+            $key = $node["key"];
             $parentKey = "$lastKey$key";
 
-            $value = is_array($node["value"])
-            ? normalizeArrayValue(getValue($node), $type, $parentKey, $iter)
-            : normalizeValue(getValue($node), $type);
+            $value = normalizeValue($node["value"], $type, $parentKey, $iter);
 
             if ($type === "changed") {
-                $value2 = is_array($node["value2"])
-                ? normalizeArrayValue(getValue2($node), $type, $parentKey, $iter)
-                : normalizeValue(getValue2($node), $type);
+                $value2 = normalizeValue($node["value2"], $type, $parentKey, $iter);
 
                 return getResultByType($type, $value, $parentKey, $value2);
             }
@@ -36,22 +32,20 @@ function getFormat(array $tree)
     return $result;
 }
 
-function normalizeArrayValue(array $value, string $type, string $parentKey, callable $iter)
+function normalizeValue(mixed $value, string $type, string $parentKey, $iter)
 {
-    if ($type !== "has children") {
-        return "[complex value]";
+    if (is_array($value)) {
+        return $type === "has children" ? $iter($value, "$parentKey.") : "[complex value]";
     }
-    return $iter($value, "$parentKey.");
-}
 
-function normalizeValue(string $value, string $type)
-{
-    if ($value === "false" || $value === "true" || $value === "null") {
-        return toString($value);
+    if (gettype($value) === "boolean") {
+        return var_export($value, true);
     }
-    if (in_array($value, ["0", "1", "3", "4", "5", "6", "7", "8", "9"], true)) {
-        return toString($value);
+
+    if ($value === null) {
+        return 'null';
     }
+
     return "'$value'";
 }
 
@@ -69,29 +63,4 @@ function getResultByType(string $type, string $value, string $parentKey, string 
         default:
             break;
     }
-}
-
-function toString(string $value)
-{
-    return trim($value, "'");
-}
-
-function getCategory(array $node)
-{
-    return $node["category"];
-}
-
-function getKey(array $node)
-{
-    return $node["key"];
-}
-
-function getValue(array $node)
-{
-    return $node["value"];
-}
-
-function getValue2(array $node)
-{
-    return $node["value2"];
 }

@@ -5,15 +5,15 @@ namespace Differ\Parser;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
 
-function parseFile(string $expansion, string $fileContent): array
+function parse(string $extension, string $content): array
 {
-    switch ($expansion) {
+    switch ($extension) {
         case "json":
-            return json_decode($fileContent, $associative = true);
+            return json_decode($content, true);
         case "yaml":
         case "yml":
-            return Yaml::parse($fileContent);
+            return Yaml::parse($content);
         default:
-            throw new Exception("Unknown expansion");
+            throw new Exception("Unknown extension");
     }
 }

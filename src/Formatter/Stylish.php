@@ -11,14 +11,12 @@ function getFormat(array $tree)
         $indentEnd = str_repeat("  ", $depth - 1);
 
         $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
-            $type = getCategory($node);
-            $key = getKey($node);
-            $value = is_array($node["value"]) ? $iter($node["value"], $depth + 2) : getValue($node);
+            $type = $node["category"];
+            $key = $node["key"];
+            $value = normalizeValue($node["value"], $type, $depth, $iter);
 
             if ($type === "changed") {
-                $value2 = is_array($node["value2"])
-                ? $iter($node["value2"], $depth + 2)
-                : getValue2($node);
+                $value2 = normalizeValue($node["value2"], $type, $depth, $iter);
 
                 return getResultByType($type, $indentStart, $key, $value, $value2);
             }
@@ -34,7 +32,7 @@ function getFormat(array $tree)
     return $line;
 }
 
-function getResultByType(string $type, string $indentStart, string $key, string $value, string $value2 = "")
+function getResultByType(string $type, string $indentStart, string $key, mixed $value, mixed $value2 = "")
 {
     switch ($type) {
         case "changed":
@@ -51,22 +49,19 @@ function getResultByType(string $type, string $indentStart, string $key, string 
     }
 }
 
-function getCategory(array $node)
+function normalizeValue(mixed $value, string $type, string $depth, $iter)
 {
-    return $node["category"];
-}
+    if (is_array($value)) {
+        return $iter($value, $depth + 2);
+    }
 
-function getKey(array $node)
-{
-    return $node["key"];
-}
+    if (gettype($value) === "boolean") {
+        return var_export($value, true);
+    }
 
-function getValue(array $node)
-{
-    return $node["value"];
-}
+    if ($value === null) {
+        return 'null';
+    }
 
-function getValue2(array $node)
-{
-    return $node["value2"];
+    return $value;
 }
