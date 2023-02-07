@@ -24,23 +24,6 @@ function getFormat(array $tree)
     return $result;
 }
 
-function normalizeValue(mixed $value, string $parentKey)
-{
-    if (is_array($value)) {
-        return "[complex value]";
-    }
-
-    if (gettype($value) === "boolean" || gettype($value) === "integer") {
-        return var_export($value, true);
-    }
-
-    if ($value === null) {
-        return 'null';
-    }
-
-    return "'$value'";
-}
-
 function getResultByType(string $type, mixed $value, string $parentKey, mixed $value2, callable $iter)
 {
     if ($type === "has children") {
@@ -60,4 +43,21 @@ function getResultByType(string $type, mixed $value, string $parentKey, mixed $v
         default:
             break;
     }
+}
+
+function normalizeValue(mixed $value, string $parentKey)
+{
+    if (is_array($value)) {
+        return "[complex value]";
+    }
+
+    if (gettype($value) === "boolean" || gettype($value) === "integer") {
+        return var_export($value, true);
+    }
+
+    if ($value === null) {
+        return 'null';
+    }
+
+    return "'$value'";
 }
