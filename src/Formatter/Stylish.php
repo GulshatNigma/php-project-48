@@ -13,15 +13,13 @@ function getFormat(array $tree)
         $lines = array_map(function ($node) use ($indentStart, $depth, $iter) {
             $type = $node["category"];
             $key = $node["key"];
-            $value = normalizeValue($node["value"], $type, $depth, $iter);
 
-            if ($type === "changed") {
-                $value2 = normalizeValue($node["value2"], $type, $depth, $iter);
+            $value = normalizeValue($node["value"], $depth, $iter);
+            $value2 = array_key_exists("value2", $node)
+            ? normalizeValue($node["value2"], $depth, $iter)
+            : "";
 
-                return getResultByType($type, $indentStart, $key, $value, $value2);
-            }
-
-            return getResultByType($type, $indentStart, $key, $value);
+            return getResultByType($type, $indentStart, $key, $value, $value2);
         }, $tree);
 
         $result = ["{", ...$lines, "{$indentEnd}}"];
@@ -32,7 +30,7 @@ function getFormat(array $tree)
     return $line;
 }
 
-function getResultByType(string $type, string $indentStart, string $key, mixed $value, mixed $value2 = "")
+function getResultByType(string $type, string $indentStart, string $key, mixed $value, mixed $value2)
 {
     switch ($type) {
         case "changed":
@@ -49,7 +47,7 @@ function getResultByType(string $type, string $indentStart, string $key, mixed $
     }
 }
 
-function normalizeValue(mixed $value, string $type, int $depth, callable $iter)
+function normalizeValue(mixed $value, int $depth, callable $iter)
 {
     if (is_array($value)) {
         return $iter($value, $depth + 2);

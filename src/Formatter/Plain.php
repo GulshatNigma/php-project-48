@@ -2,9 +2,6 @@
 
 namespace Differ\Formatter\Plain;
 
-use function Functional\select_keys;
-use function Functional\flatten;
-
 function getFormat(array $tree)
 {
     $iter = function ($tree, $lastKey = "") use (&$iter) {
@@ -13,15 +10,10 @@ function getFormat(array $tree)
             $key = $node["key"];
             $parentKey = "$lastKey$key";
 
-            $value = normalizeValue($node["value"], $type, $parentKey, $iter);
+            $value = $node["value"];
+            $value2 = $node["value2"] ?? null;
 
-            if ($type === "changed") {
-                $value2 = normalizeValue($node["value2"], $type, $parentKey, $iter);
-
-                return getResultByType($type, $value, $parentKey, $value2);
-            }
-
-            return getResultByType($type, $value, $parentKey);
+            return getResultByType($type, $value, $parentKey, $value2, $iter);
         }, $tree);
 
         $line = array_filter([...$lines], fn($path) => $path !== null);
@@ -32,10 +24,10 @@ function getFormat(array $tree)
     return $result;
 }
 
-function normalizeValue(mixed $value, string $type, string $parentKey, callable $iter)
+function normalizeValue(mixed $value, string $parentKey)
 {
     if (is_array($value)) {
-        return $type === "has children" ? $iter($value, "$parentKey.") : "[complex value]";
+        return "[complex value]";
     }
 
     if (gettype($value) === "boolean" || gettype($value) === "integer") {
@@ -49,17 +41,22 @@ function normalizeValue(mixed $value, string $type, string $parentKey, callable 
     return "'$value'";
 }
 
-function getResultByType(string $type, string $value, string $parentKey, string $value2 = "")
+function getResultByType(string $type, mixed $value, string $parentKey, mixed $value2, callable $iter)
 {
+    if ($type === "has children") {
+        return $iter($value, "$parentKey.");
+    }
+
+    $normalizedValue = normalizeValue($value, $parentKey, $iter);
+    $normalizedValue2 = normalizeValue($value2, $parentKey, $iter);
+
     switch ($type) {
-        case "has children":
-            return "$value";
         case "changed":
-            return "Property '" . $parentKey . "' was updated. From $value to $value2";
+            return "Property '" . $parentKey . "' was updated. From $normalizedValue to $normalizedValue2";
         case "deleted":
             return "Property '" . $parentKey . "' was removed";
         case "added":
-            return "Property '" . $parentKey . "' was added with value: $value";
+            return "Property '" . $parentKey . "' was added with value: $normalizedValue";
         default:
             break;
     }
