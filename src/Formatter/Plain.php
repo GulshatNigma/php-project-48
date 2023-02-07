@@ -47,8 +47,8 @@ function getResultByType(string $type, mixed $value, string $parentKey, mixed $v
         return $iter($value, "$parentKey.");
     }
 
-    $normalizedValue = normalizeValue($value, $parentKey, $iter);
-    $normalizedValue2 = normalizeValue($value2, $parentKey, $iter);
+    $normalizedValue = normalizeValue($value, $parentKey);
+    $normalizedValue2 = normalizeValue($value2, $parentKey);
 
     switch ($type) {
         case "changed":
