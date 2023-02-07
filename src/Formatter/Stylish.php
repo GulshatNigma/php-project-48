@@ -17,7 +17,7 @@ function getFormat(array $tree)
             $value = normalizeValue($node["value"], $depth, $iter);
             $value2 = array_key_exists("value2", $node)
             ? normalizeValue($node["value2"], $depth, $iter)
-            : "";
+            : null;
 
             return getResultByType($type, $indentStart, $key, $value, $value2);
         }, $tree);
